@@ -140,6 +140,6 @@ export function getHelpers(ctx: Context, page: Page): Helpers {
             }
         },
         moment,
-        ...ctx.plugin.helpers
+        ...ctx.extend.helpers
     }
 }

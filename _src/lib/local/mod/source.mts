@@ -74,7 +74,7 @@ export default class Source {
         post.excerpt = await ctx.Renderer.render(resolved.postIntroduction, path, { ctx });
         post.full_source = path;
         post.language = resolved.properties.language as string ?? ctx.config.language;
-        post.layout = resolved.properties.layout ?? ctx.config.deafult_layout;
+        post.layout = resolved.properties.layout ?? ctx.config.default_layout;
         post.length = Text.wordCount(content);
         post.license = resolved.properties.license as string ?? 'default';
         post.more = resolved.postContent;

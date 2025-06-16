@@ -1,7 +1,8 @@
 import { ConfigNotParsableError } from "#lib/interface/error";
 import ObjectParser from "#lib/object-parser/object-parser";
+import { Config } from "@fewu-swg/abstract-types";
 
-const defaultConfig = {
+const defaultConfig: Config = {
     title: 'Fewu',
     description: '',
     author: 'Meteor',
@@ -9,7 +10,7 @@ const defaultConfig = {
     timezone: 'Asia/Shanghai',
     url: 'https://blog.example.org',
     root: '/',
-    deafult_layout: 'default',
+    default_layout: 'default',
     source_dir: 'source',
     public_dir: 'public',
     theme: 'Blank',
@@ -18,18 +19,14 @@ const defaultConfig = {
 
 export default defaultConfig;
 
-export declare type defaultConfigType = typeof defaultConfig & {
-    [key: string]: any,
-};
+export declare type partialConfigType = Partial<Config>;
 
-export declare type partialConfigType = Partial<defaultConfigType>;
-
-export function mixConfig(defaultConfig: defaultConfigType, userConfig: partialConfigType): defaultConfigType {
+export function mixConfig(defaultConfig: Config, userConfig: partialConfigType): Config {
     const mixedConfig: partialConfigType = {};
     Object.assign(mixedConfig, defaultConfig);
     Object.assign(mixedConfig, userConfig);
 
-    return mixedConfig as defaultConfigType;
+    return mixedConfig as Config;
 };
 
 export function readConfig(_baseDir = process.cwd(), configPath: string): partialConfigType {

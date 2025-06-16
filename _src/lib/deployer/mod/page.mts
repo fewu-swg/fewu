@@ -66,7 +66,7 @@ class PageDeployer implements Deployable {
         let files = (await readdir(layoutDir)).map(v => join(layoutDir, v));
 
         let tasks: Promise<Result<void>>[] = [];
-        let validPages = [...defaultPages, ...ctx.plugin.append_pages];
+        let validPages = [...defaultPages, ...ctx.extend.append_pages];
         for (const file of files) {
             let filename = basename(file, extname(file));
             if (!await ExtendedFS.isDir(file)) {
@@ -99,7 +99,7 @@ class PageDeployer implements Deployable {
                 return;
             }
             if (dirname(path) === 'layout') {
-                let validPages = [...defaultPages, ...ctx.plugin.append_pages];
+                let validPages = [...defaultPages, ...ctx.extend.append_pages];
                 let filename = basename(path, extname(path));
 
                 for (let pagable of validPages) {

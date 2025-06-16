@@ -1,4 +1,5 @@
-import { Config, AppPlugin, I18nUsable } from "../types.mjs";
+import { BasicContext, Config, Plugin } from "@fewu-swg/abstract-types";
+import { AppPlugin, I18nUsable } from "../types.mjs";
 import { version } from "./fewu.mjs";
 import defaultConfig, { mixConfig, readConfig } from "./config.mjs";
 
@@ -16,6 +17,7 @@ import { DeployerConstructor } from "#lib/deployer/deployer";
 import { Source, Theme } from "#lib/local/local";
 import { ConfigNotFoundError } from "#lib/interface/error";
 import registerServer from "#lib/server/server-plugin";
+import { PluginResolver } from "./plugind.mjs";
 
 interface Context {
     on(event: 'startup', listenter: (ctx: Context, ...args: any[]) => any): this;
@@ -30,13 +32,14 @@ interface Context {
     on(event: 'exit', listenter: (ctx: Context, ...args: any[]) => any): this;
 }
 
-class Context extends EventEmitter {
+class Context extends EventEmitter implements BasicContext {
 
     public readonly VERSION: string;
     public readonly config: Config;
     public readonly env: typeof process.env;
     public readonly data: DataStorage;
-    public plugin: AppPlugin;
+    public extend: AppPlugin;
+    public plugins: Plugin[] = [];
     public i18ns: I18nUsable[];
     public locals = { Source, Theme };
 
@@ -73,8 +76,10 @@ class Context extends EventEmitter {
         this.config = { ...CONFIG };
         this.env = process.env;
         this.data = new DataStorage();
-        this.plugin = {
+        this.extend = {
             append_pages: [],
+            append_parsers: [],
+            append_renderers: [],
             helpers: {}
         };
         this.i18ns = [];
@@ -99,6 +104,8 @@ class Context extends EventEmitter {
         this.ObjectParser = ObjectParser;
 
         registerServer(this);
+
+        const pluginResolver = new PluginResolver(this);
     }
 
 }

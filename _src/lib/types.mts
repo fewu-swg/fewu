@@ -1,9 +1,9 @@
 import { Stats } from "node:fs";
 import { Moment } from "moment";
 import Context from "./fewu/context.mjs";
-import { defaultConfigType } from "./fewu/config.mjs";
+import { __Parser, __Renderer, Config } from "@fewu-swg/abstract-types";
 
-export declare interface Config extends defaultConfigType { };
+export { Config };
 
 export declare interface Page {
     id?: string;  // non-standard API
@@ -60,6 +60,8 @@ export declare interface Pagable {
 
 export declare interface AppPlugin {
     append_pages: Pagable[];
+    append_renderers: __Renderer[];
+    append_parsers: __Parser[];
     helpers: Record<string, Function>;
 }
 

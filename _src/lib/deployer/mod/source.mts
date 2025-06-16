@@ -31,22 +31,24 @@ class SourceDeployer implements Deployable {
     constructor(ctx: Context) {
         let { promise, resolve } = NewPromise.withResolvers<void>();
         this.#constructComplete = promise;
-        if (Array.isArray(ctx.config.external?.source_deployers)) {
-            let externalSourceDeployers = ctx.config.external.source_deployers as string[];
-            (async () => {
-                await Promise.allSettled(externalSourceDeployers.map(v => (async (v) => {
-                    let module = await dynamicImport(v);
-                    let defaultExport = module.default;
-                    if (!defaultExport) {
-                        Console.error(new ModuleNotFoundError(v));
-                    } else {
-                        this.availableProcessors.push(defaultExport as Processor);
-                    }
-                })(v)));
-            })().then(resolve);
-        } else {
-            resolve();
-        }
+        // **TODO** wait for newer implements
+        // if (Array.isArray(ctx.config.external?.source_deployers)) {
+        //     let externalSourceDeployers = ctx.config.external.source_deployers as string[];
+        //     (async () => {
+        //         await Promise.allSettled(externalSourceDeployers.map(v => (async (v) => {
+        //             let module = await dynamicImport(v);
+        //             let defaultExport = module.default;
+        //             if (!defaultExport) {
+        //                 Console.error(new ModuleNotFoundError(v));
+        //             } else {
+        //                 this.availableProcessors.push(defaultExport as Processor);
+        //             }
+        //         })(v)));
+        //     })().then(resolve);
+        // } else {
+        //     resolve();
+        // }
+        resolve();
     }
     async #deploySingle(ctx: Context, file: string) {
         await this.#constructComplete;
