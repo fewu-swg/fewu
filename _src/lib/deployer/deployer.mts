@@ -20,7 +20,11 @@ class Deployer {
             new PostDeployer(ctx),
             new PageDeployer(ctx),
             new SourceDeployer(ctx)
-        ]
+        ];
+        // @ts-ignore
+        ctx.on('$$Deploy', async (_ctx: Context) => {
+            this.run(_ctx);
+        });
     }
 
     async run(ctx: Context) {

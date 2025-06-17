@@ -4,6 +4,8 @@ const ctx = new Context();
 
 async function App() {
 
+    await ctx.initialized;
+
     await ctx.emit('afterStartup', ctx);
 
     await ctx.emit('beforeProcess', ctx);
@@ -14,7 +16,7 @@ async function App() {
 
     await ctx.emit('beforeDeploy', ctx);
 
-    await ctx.Deployer.run(ctx);
+    await ctx.emit('$$Deploy', ctx);
 
     await ctx.emit('afterDeploy', ctx);
 

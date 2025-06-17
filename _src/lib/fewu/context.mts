@@ -34,21 +34,21 @@ class Context extends AsyncEventEmitter implements BasicContext {
     public readonly THEME_DIRECTORY: string;
     public readonly CONFIG_PATH: string;
 
-    public readonly Deployer;
-    public readonly Renderer;
+    public initialized: Promise<unknown>;
 
     constructor(baseDirectory = process.cwd()) {
         // construct EventEmitter
         super();
+        let async_tasks: Promise<unknown>[] = [];
 
         let configPaths = [...[Argv['-C']?.[0]].filter(Boolean), 'config.yaml', 'config.yml', '_config.yaml', '_config.yml', 'config.json'].map(v => join(baseDirectory, v));
         let CONFIG_PATH: string | undefined;
-        for(let configPath of configPaths){
-            if(existsSync(configPath)){
+        for (let configPath of configPaths) {
+            if (existsSync(configPath)) {
                 CONFIG_PATH = configPath;
             }
         }
-        if(!CONFIG_PATH){
+        if (!CONFIG_PATH) {
             throw new ConfigNotFoundError(configPaths);
         }
         Console.log(`Using config: ${CONFIG_PATH}`);
@@ -79,21 +79,26 @@ class Context extends AsyncEventEmitter implements BasicContext {
         this.CONFIG_PATH = CONFIG_PATH;
 
         const pluginResolver = new PluginResolver(this);
-        pluginResolver.resolveAll();
 
         // test if theme is in themes or node_modules (npm package)
-        if(existsSync(join(baseDirectory,"node_modules",CONFIG.theme))) {
-            this.THEME_DIRECTORY = join(baseDirectory,"node_modules",CONFIG.theme);
+        if (existsSync(join(baseDirectory, "node_modules", CONFIG.theme))) {
+            this.THEME_DIRECTORY = join(baseDirectory, "node_modules", CONFIG.theme);
         }
 
-        this.Deployer = new DeployerConstructor(this);
-        this.Renderer = new RendererConstructor(this);
+        async_tasks.push((async _ => {
+            await pluginResolver.resolveAll();
+            Console.log(`External Plugins: ${this.plugins.map(v => v.__fewu_plugin_name)}`);
+            await pluginResolver.loadPlugins([
+                new _server_plugin(this),
+                new _log_plugin(this),
+                new _core_collect_plugin(this)
+            ]);
+            await pluginResolver.loadPlugins(this.plugins);
+        })());
 
-        pluginResolver.loadPlugins([
-            new _server_plugin(this),
-            new _log_plugin(this),
-            new _core_collect_plugin(this)
-        ]);
+
+
+        this.initialized = Promise.all(async_tasks);
     }
 
 }
