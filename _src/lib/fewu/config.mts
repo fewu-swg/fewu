@@ -14,7 +14,12 @@ const defaultConfig: Config = {
     source_dir: 'source',
     public_dir: 'public',
     theme: 'Blank',
-    excluded_files: [] as string[]
+    excluded_files: [] as string[],
+    plugins: [
+        'fewu-renderer-.*',
+        'fewu-plugin-.*'
+    ],
+    plugin_configs: {}
 }
 
 export default defaultConfig;

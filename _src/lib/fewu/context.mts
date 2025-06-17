@@ -1,57 +1,41 @@
-import { BasicContext, Config, Plugin } from "@fewu-swg/abstract-types";
-import { AppPlugin, I18nUsable } from "../types.mjs";
+import { BasicContext, Config, Plugin, I18nProfiles } from "@fewu-swg/abstract-types";
 import { version } from "./fewu.mjs";
 import defaultConfig, { mixConfig, readConfig } from "./config.mjs";
+import { PluginResolver } from "./plugind.mjs";
 
-import Argv from "#util/Argv";
-import Console from "#util/Console";
+import { Argv, Console } from "@fewu-swg/fewu-utils";
+import AsyncEventEmitter from "#util/AsyncEmitter";
 
 import { join } from "path";
-import { EventEmitter } from "events";
 import { existsSync } from "fs";
-import { tmpdir } from "os";
 import DataStorage from "#lib/data/data";
 import { RendererConstructor } from "#lib/render/render";
-import ObjectParser from "#lib/object-parser/object-parser";
 import { DeployerConstructor } from "#lib/deployer/deployer";
 import { Source, Theme } from "#lib/local/local";
 import { ConfigNotFoundError } from "#lib/interface/error";
-import registerServer from "#lib/server/server-plugin";
-import { PluginResolver } from "./plugind.mjs";
+import _server_plugin from "#lib/plugins/server-plugin";
+import _log_plugin from "#lib/plugins/log-plugin";
+import _core_collect_plugin from "#lib/data/collect-plugin";
 
-interface Context {
-    on(event: 'startup', listenter: (ctx: Context, ...args: any[]) => any): this;
-    on(event: 'afterStartup', listenter: (ctx: Context, ...args: any[]) => any): this;
-    on(event: 'beforeProcess', listenter: (ctx: Context, ...args: any[]) => any): this;
-    on(event: 'afterProcess', listenter: (ctx: Context, ...args: any[]) => any): this;
-    on(event: 'beforeGenerate', listenter: (ctx: Context, ...args: any[]) => any): this;
-    on(event: 'afterGenerate', listenter: (ctx: Context, ...args: any[]) => any): this;
-    on(event: 'beforeDeploy', listenter: (ctx: Context, ...args: any[]) => any): this;
-    on(event: 'afterDeploy', listenter: (ctx: Context, ...args: any[]) => any): this;
-    on(event: 'ready', listenter: (ctx: Context, ...args: any[]) => any): this;
-    on(event: 'exit', listenter: (ctx: Context, ...args: any[]) => any): this;
-}
-
-class Context extends EventEmitter implements BasicContext {
+class Context extends AsyncEventEmitter implements BasicContext {
 
     public readonly VERSION: string;
     public readonly config: Config;
     public readonly env: typeof process.env;
     public readonly data: DataStorage;
-    public extend: AppPlugin;
+    public extend: Record<string, any>;
     public plugins: Plugin[] = [];
-    public i18ns: I18nUsable[];
-    public locals = { Source, Theme };
+    public i18ns: I18nProfiles[];
+    // public locals = { Source, Theme };
 
     public readonly BASE_DIRECTORY: string;
-    public readonly PUBLIC_DIRECTORY: string;
-    public readonly SOURCE_DIRECTORY: string;
+    public PUBLIC_DIRECTORY: string;
+    public SOURCE_DIRECTORY: string;
     public readonly THEME_DIRECTORY: string;
     public readonly CONFIG_PATH: string;
 
     public readonly Deployer;
     public readonly Renderer;
-    public readonly ObjectParser;
 
     constructor(baseDirectory = process.cwd()) {
         // construct EventEmitter
@@ -80,7 +64,11 @@ class Context extends EventEmitter implements BasicContext {
             append_pages: [],
             append_parsers: [],
             append_renderers: [],
-            helpers: {}
+            helpers: {},
+            Source,
+            Theme,
+            Deployer: new DeployerConstructor(this),
+            Renderer: new RendererConstructor(this)
         };
         this.i18ns = [];
 
@@ -90,22 +78,22 @@ class Context extends EventEmitter implements BasicContext {
         this.THEME_DIRECTORY = join(baseDirectory, 'themes', CONFIG.theme);
         this.CONFIG_PATH = CONFIG_PATH;
 
+        const pluginResolver = new PluginResolver(this);
+        pluginResolver.resolveAll();
+
         // test if theme is in themes or node_modules (npm package)
         if(existsSync(join(baseDirectory,"node_modules",CONFIG.theme))) {
             this.THEME_DIRECTORY = join(baseDirectory,"node_modules",CONFIG.theme);
         }
 
-        if (Argv['-S'] || Argv['--server']) {
-            this.PUBLIC_DIRECTORY = join(tmpdir(),'io.fewu-swg.fewu','live-server');
-        }
-
         this.Deployer = new DeployerConstructor(this);
         this.Renderer = new RendererConstructor(this);
-        this.ObjectParser = ObjectParser;
 
-        registerServer(this);
-
-        const pluginResolver = new PluginResolver(this);
+        pluginResolver.loadPlugins([
+            new _server_plugin(this),
+            new _log_plugin(this),
+            new _core_collect_plugin(this)
+        ]);
     }
 
 }

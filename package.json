@@ -6,6 +6,7 @@
         "url": "https://github.com/fewu-swg/fewu"
     },
     "dependencies": {
+        "@fewu-swg/fewu-utils": "^1.0.1",
         "fs": "0.0.1-security",
         "mime": "^4.0.7",
         "moment": "^2.30.1",
@@ -19,7 +20,7 @@
     },
     "type": "module",
     "devDependencies": {
-        "@fewu-swg/abstract-types": "^1.1.0",
+        "@fewu-swg/abstract-types": "^1.2.1",
         "@types/node": "^24.0.3",
         "@typescript/native-preview": "7.0.0-dev.20250528.1",
         "@typescript/native-preview-linux-x64": "7.0.0-dev.20250528.1",
@@ -29,6 +30,6 @@
         "access": "public"
     },
     "scripts": {
-        "prepublish": "rm _dist/* -r; pnpm tsgo"
+        "prepublish": "rm _dist/* -r; pnpm tsgo || pnpm tsc"
     }
 }

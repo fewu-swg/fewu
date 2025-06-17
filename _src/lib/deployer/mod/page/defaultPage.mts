@@ -1,5 +1,6 @@
-import { Context, Pagable } from "#lib/types";
+import { Pagable } from "#lib/types";
 import { join } from "path";
+import { BasicContext as Context } from "@fewu-swg/abstract-types";
 
 const defaultPages: Pagable[] = [
     {

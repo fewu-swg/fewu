@@ -1,6 +1,6 @@
-import { Context } from "#lib/types";
 import { join } from "path";
 import { Processor } from "../source.mjs";
+import { BasicContext as Context } from "@fewu-swg/abstract-types";
 import { compile } from "sass";
 import ExtendedFS from "#util/ExtendedFS";
 import { readFile, writeFile } from "fs/promises";

@@ -1,12 +1,13 @@
-import { Context, Pagable, Page, Result } from "#lib/types";
-import { basename, dirname, extname, join, relative } from "path";
+import { Pagable, Result } from "#lib/types";
 import { Deployable } from "../deployer.mjs";
-import { readdir, writeFile } from "fs/promises";
+import defaultPages from "./page/defaultPage.mjs";
 import { getHelpers } from "#lib/interface/helper";
 import ExtendedFS from "#util/ExtendedFS";
-import Console from "#util/Console";
-import defaultPages from "./page/defaultPage.mjs";
+import { Console } from "@fewu-swg/fewu-utils";
+import { BasicContext as Context, Page } from "@fewu-swg/abstract-types";
 import { existsSync } from "fs";
+import { readdir, writeFile } from "fs/promises";
+import { basename, dirname, extname, join, relative } from "path";
 
 class PageDeployer implements Deployable {
     constructor(_ctx: Context) {
@@ -27,7 +28,7 @@ class PageDeployer implements Deployable {
                 full_source: path
             };
             let task = (async (): Promise<Result<void>> => {
-                const result = await ctx.Renderer.renderFile(path, {
+                const result = await ctx.extend.Renderer.renderFile(path, {
                     site: ctx.data,
                     page,
                     ctx,

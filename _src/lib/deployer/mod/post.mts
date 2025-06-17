@@ -1,21 +1,22 @@
-import { Context, Post, Result } from "#lib/types";
+import { Result } from "#lib/types";
 import { getHelpers } from "#lib/interface/helper";
 import ExtendedFS from "#util/ExtendedFS";
 import { writeFile } from "fs/promises";
 import { basename, dirname, extname, join } from "path";
 import { Deployable } from "../deployer.mjs";
 import { existsSync } from "fs";
-import Console from "#util/Console";
+import { Console } from "@fewu-swg/fewu-utils";
+import { BasicContext as Context, Page } from "@fewu-swg/abstract-types";
 
 export default class PostDeployer implements Deployable {
     constructor(_ctx: Context) {
 
     }
-    async #deploySingle(ctx: Context, post: Post): Promise<Result<void>> {
+    async #deploySingle(ctx: Context, post: Page): Promise<Result<void>> {
         let target = join(ctx.PUBLIC_DIRECTORY, post.source, 'index.html');
 
         let layoutDir = join(ctx.THEME_DIRECTORY, 'layout');
-        let result = await ctx.Renderer.renderFile(join(layoutDir, `post.${post.layout}.pug`), {
+        let result = await ctx.extend.Renderer.renderFile(join(layoutDir, `post.${post.layout}.pug`), {
             page: post,
             site: ctx.data,
             ctx,
@@ -58,9 +59,9 @@ export default class PostDeployer implements Deployable {
 
     async deployWatch(ctx: Context, path: string, from: string): Promise<any> {
         if (from === ctx.SOURCE_DIRECTORY) {
-            let recollected = await ctx.locals.Source.read(ctx, "post", join(from,path));
+            let recollected = await ctx.extend.Source.read(ctx, "post", join(from,path));
             ctx.data.sources[path] = recollected;
-            await ctx.Deployer.run(ctx);
+            await ctx.extend.Deployer.run(ctx);
             return;
         } else if (from)
         try {

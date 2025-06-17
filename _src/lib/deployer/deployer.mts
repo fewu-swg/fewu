@@ -1,5 +1,6 @@
-import { Context, Result } from "#lib/types";
-import Console from "#util/Console";
+import { Result } from "#lib/types";
+import { Console } from "@fewu-swg/fewu-utils";
+import { BasicContext as Context } from "@fewu-swg/abstract-types";
 import PageDeployer from "./mod/page.mjs";
 import PostDeployer from "./mod/post.mjs";
 import SourceDeployer from "./mod/source.mjs";

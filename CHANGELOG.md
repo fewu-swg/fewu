@@ -1,16 +1,41 @@
 # CHANGELOG
 
-## REL-NEXT - 2025-05-28
+## REL3.5.0 - 2025-06-17
+
+### IMPORTANTS
+
+* `Context` now extends `AsyncEventEmitter` that supports async events.
+
+* `Context.plugin` is renamed to `Context.extend`.
+
+* Experimental support for plugin system. See document at [Document: Plugin](./_doc/Plugin.md).
+
+* Port server, logger, collector to plugin.
+
+* `Context.Renderer` is moved to `Context.extend.Renderer`.
+
+* `Context.extend.Deployer` is moved to `Context.extend.Deployer`.
+
+### UTIL CHANGES
+
+* Unused Function Removal: `#util/I18n` `#util/StandaloneApp` (Deprecated).
+
+* Unused Function Removal: `#util/Console` `#util/Text` `#util/Argv` `#util/dynamicImport` `#util/NewPromise` `#util/NodeModules` (Replaced by `@fewu-swg/fewu-utils`).
+
+* New Util: `AsyncEventEmitter` at `#util/AsyncEmitter`.
+
+### MISCS
 
 * Experimental Dev Feature: Use `typescript/native-preview`(`tsgo`) to compile code.
 
-* Unused Function Removal: `#util/I18n` (Deprecated)
+* Fix typo in default config.
+
+* Move types to `@fewu-swg/abstract-types`.
 
 * Bugfix: Version detector causes error in Node.js < 20.11.0
 
 * Feature: Automatically disable live change in server mode when `fs.watch` with `recursively` is not supported in current platform.
 
-* Port: DynamicImport is ported to TypeScript.
 
 ## REL3.4.18 - 2025-05-20
 

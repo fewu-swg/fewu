@@ -7,10 +7,10 @@ let regExps = {
     MATCH_MORE: /< *! *-- *more *-- *>/,
 };
 
-export function resolveContent(content: string) {
+export async function resolveContent(content: string) {
     let postContent = '';
     let postIntroduction = '';
-    let [postProp, i] = resolve(content)
+    let [postProp, i] = await resolve(content)
     let properties: Record<string, string> = {
         title: "Untitled",
         date: '1970-1-1',

@@ -1,15 +1,15 @@
-import Context from "#lib/fewu/context";
+// import Context from "#lib/fewu/context";
 import { Post, Scaffold } from "#lib/types";
+import { BasicContext as Context } from "@fewu-swg/abstract-types";
 import { resolveContent } from "#lib/local/mod/post"
 
 import ExtendedFS from "#util/ExtendedFS";
-import Text from "#util/Text";
 
 import { readFile, stat } from "fs/promises";
 import { extname, join, relative } from "path";;
 import moment from "moment";
 import { watch, WatchEventType } from "fs";
-import Console from "#util/Console";
+import { Console, Text } from "@fewu-swg/fewu-utils";
 
 const ignoredFileTypes = [
     '.png', '.gif', '.webp', '.bmp', '.svg', /^\.pptx?$/, /^\.jpe?g?$/, /^\..*?ignore$/, /\.ignore\..*$/
@@ -62,22 +62,22 @@ export default class Source {
 
     static async #readPost(ctx: Context, path: string, content: string): Promise<Post> {
         let fileStat = await stat(path);
-        let resolved = resolveContent(content);
+        let resolved = await resolveContent(content);
         let post: Partial<Post> = {};
         let categoryProp = resolved.properties.categories ?? resolved.properties.category;
         let tagProp = resolved.properties.tags ?? resolved.properties.tag;
         post.author = resolved.properties.author as string ?? ctx.config.author;
         post.categories = Array.isArray(categoryProp) ? categoryProp : String(categoryProp).split(" ").filter(v => v !== '');
         post.comments = resolved.properties.comments ? true : false;
-        post.content = await ctx.Renderer.render(resolved.postContent, path, { ctx });
+        post.content = await ctx.extend.Renderer.render(resolved.postContent, path, { ctx });
         post.date = moment(resolved.properties.date);
-        post.excerpt = await ctx.Renderer.render(resolved.postIntroduction, path, { ctx });
+        post.excerpt = await ctx.extend.Renderer.render(resolved.postIntroduction, path, { ctx });
         post.full_source = path;
         post.language = resolved.properties.language as string ?? ctx.config.language;
         post.layout = resolved.properties.layout ?? ctx.config.default_layout;
-        post.length = Text.wordCount(content);
+        post.length = Text.countWords(content);
         post.license = resolved.properties.license as string ?? 'default';
-        post.more = resolved.postContent;
+        // post.more = resolved.postContent; // deprecated
         post.properties = resolved.properties;
         post.raw = resolved.postContent;
         post.raw_excerpt = resolved.postIntroduction;

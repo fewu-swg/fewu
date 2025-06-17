@@ -1,6 +1,5 @@
 import ObjectParser from "#lib/object-parser/object-parser";
-import { Context } from "#lib/types";
-import Console from "#util/Console";
+import { BasicContext as Context } from "@fewu-swg/abstract-types";
 import ExtendedFS from "#util/ExtendedFS";
 import { existsSync, watch, WatchEventType } from "fs";
 import { readdir } from "fs/promises";
