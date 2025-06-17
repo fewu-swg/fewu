@@ -1,12 +1,9 @@
 import { extname, basename } from "path";
-import { Context, Result, Wrapper } from "#lib/types";
+import { Result, Wrapper } from "#lib/types";
 import { readFile } from "fs/promises";
-import Console from "#util/Console";
+import { Console, NewPromise, dynamicImport, NodeModules } from "@fewu-swg/fewu-utils";
 import EventEmitter from "events";
-import { AbstractRenderer } from '@fewu-swg/abstract-types';
-import NodeModules from "#util/NodeModules";
-import dynamicImport from "#util/dynamicImport";
-import NewPromise from "#util/NewPromise";
+import { AbstractRenderer, BasicContext as Context } from '@fewu-swg/abstract-types';
 
 export declare interface Processor {
     type: RegExp;
@@ -27,15 +24,22 @@ class _Renderer extends EventEmitter {
     ];
 
     #initialized = new Promise<void>(() => { });
+    #initialized_old = new Promise<void>(() => { });
 
     constructor(ctx: Context) {
         super();
+        let { promise, resolve } = NewPromise.withResolvers<void>();
+        this.#initialized = promise;
+        ctx.on('afterStartup', (_ctx: Context) => {
+            this.availableRenderers.push(..._ctx.extend.append_renderers);
+            resolve();
+        });
         this.#init(ctx);
     }
 
     async #init(ctx: Context) {
         let { promise, resolve } = NewPromise.withResolvers<void>();
-        this.#initialized = promise;
+        this.#initialized_old = promise;
         let all_modules = await NodeModules.getAllModules();
         let renderer_modules_list = all_modules.filter(v => basename(v).startsWith('fewu-renderer'));
         let renderers = (await Promise.all(renderer_modules_list.map(async v => new ((await dynamicImport(v) as { renderer: any })?.renderer) as AbstractRenderer))); // idk why node does not allow import("@**/*"), or host-path is required?
@@ -67,6 +71,7 @@ class _Renderer extends EventEmitter {
 
     async render(content: string, templatePath: string, variables?: object): Promise<string> {
         await this.#initialized;
+        await this.#initialized_old;
         let ext = extname(templatePath), matchedRenderer: AbstractRenderer | undefined;
         for (let renderer of this.availableRenderers) {
             if (renderer.type.test(ext)) {
@@ -99,6 +104,7 @@ class _Renderer extends EventEmitter {
 
     async renderFile(templatePath: string, variables?: object): Promise<string> {
         await this.#initialized;
+        await this.#initialized_old;
         let buffer = await readFile(templatePath);
         let content = buffer.toString();
         return this.render(content, templatePath, variables);

@@ -1,9 +1,9 @@
-import { Context } from '#lib/types';
+import { BasicContext as Context } from '@fewu-swg/abstract-types';
 import { createServer, Server as HttpServer, IncomingMessage, ServerResponse } from 'node:http';
 import { join } from 'node:path';
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import Mime from "mime";
-import Console from '#util/Console';
+import { Console } from "@fewu-swg/fewu-utils";
 
 class Server {
     serverInstance?: HttpServer;

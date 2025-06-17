@@ -1,10 +1,11 @@
-import { Context, PageContainer, Page, Post } from "#lib/types";
+import { PageContainer, Post } from "#lib/types";
 import { Source, Theme } from "#lib/local/local";
+import { BasicContext as Context, Plugin, Page } from "@fewu-swg/abstract-types";
 
 function post_sort(a: Page, b: Page): number {
-    return a?.date?.isBefore(b.date) 
+    return a?.date?.isBefore(b.date)
         ? 1
-        : a?.date?.isSame(b.date) 
+        : a?.date?.isSame(b.date)
             ? (Number(a.properties?.order ?? 1) > Number(b.properties?.order ?? 1) ? 1 : -1)
             : -1;
 }
@@ -31,7 +32,7 @@ function store(post: Post, keys: string[], targets: PageContainer[]) {
     })
 }
 
-export default async function collectData(ctx: Context) {
+async function collectData(ctx: Context) {
     let posts = await Source.traverse(ctx, 'post', ctx.config.excluded_files);
     await Promise.all(posts.map(path => (async () => {
         let post = await Source.read(ctx, 'post', path);
@@ -51,4 +52,19 @@ export default async function collectData(ctx: Context) {
     ctx.data.tags.sort((a, b) => a.key > b.key ? 1 : -1);
     await Theme.executePlugins(ctx);
     await Theme.getI18n(ctx);
+}
+
+export default class _core_collect_plugin implements Plugin {
+    __fewu_is_plugin: boolean = true;
+    __fewu_plugin_name: string = `Builtin<Core::Collector>`;
+    exports = {
+        renderers: [],
+        parsers: []
+    }
+    constructor(_: Context) { }
+    
+    assigner(ctx: Context): void {
+        // @ts-ignore
+        ctx.on('$$Process', collectData);
+    }
 }
