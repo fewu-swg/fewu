@@ -38,14 +38,23 @@ class _Renderer extends EventEmitter {
     }
 
     async #init(ctx: Context) {
+        // support old renderer standalone
         let { promise, resolve } = NewPromise.withResolvers<void>();
         this.#initialized_old = promise;
         let all_modules = await NodeModules.getAllModules();
         let renderer_modules_list = all_modules.filter(v => basename(v).startsWith('fewu-renderer'));
-        let renderers = (await Promise.all(renderer_modules_list.map(async v => new ((await dynamicImport(v) as { renderer: any })?.renderer) as AbstractRenderer))); // idk why node does not allow import("@**/*"), or host-path is required?
+        let renderers = (await Promise.all(renderer_modules_list.map(async v => {
+            try {
+                return new ((await dynamicImport(v) as { renderer: any })?.renderer) as AbstractRenderer
+            } catch(e) {
+                console.error(e);
+            }
+        }))).filter(Boolean) as AbstractRenderer[]; // idk why node does not allow import("@**/*"), or host-path is required?
         renderers = renderers.filter(v => v).filter(v => v.__fewu__ === 'renderer');
         this.availableRenderers.push(...renderers);
 
+
+        await this.#initialized;
         Console.info({
             msg: 'Available renderers:',
             color: 'GREEN'
