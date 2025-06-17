@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## REL3.5.1 - 2025-06-17
+
+* Fix bug that custom plugins cannot be loaded.
+
+* Add compat for old style plugins.
+
 ## REL3.5.0 - 2025-06-17
 
 ### IMPORTANTS
