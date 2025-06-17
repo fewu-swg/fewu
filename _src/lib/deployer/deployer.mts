@@ -4,6 +4,7 @@ import { BasicContext as Context } from "@fewu-swg/abstract-types";
 import PageDeployer from "./mod/page.mjs";
 import PostDeployer from "./mod/post.mjs";
 import SourceDeployer from "./mod/source.mjs";
+import { writeFile } from "node:fs/promises";
 
 export abstract declare class Deployable {
     static deploy(ctx: Context): Promise<Result<string>>;
@@ -15,16 +16,30 @@ export abstract declare class Deployable {
 class Deployer {
     deployers: Deployable[] = [];
 
+    deployed_files: { path: string, time: Date }[] = [];
+
     constructor(ctx: Context) {
         this.deployers = [
-            new PostDeployer(ctx),
-            new PageDeployer(ctx),
-            new SourceDeployer(ctx)
+            new PostDeployer(ctx, this),
+            new PageDeployer(ctx, this),
+            new SourceDeployer(ctx, this)
         ];
         // @ts-ignore
         ctx.on('$$Deploy', async (_ctx: Context) => {
-            this.run(_ctx);
+            await this.run(_ctx);
         });
+    }
+
+    async writeFile(...args: Parameters<typeof writeFile>): Promise<void> {
+        try {
+            await writeFile(...args);
+            this.deployed_files.push({
+                path: args[0].toString(),
+                time: new Date()
+            });
+        } catch(e) {
+            throw e;
+        }
     }
 
     async run(ctx: Context) {

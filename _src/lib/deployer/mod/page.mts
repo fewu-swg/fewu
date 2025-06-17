@@ -1,18 +1,21 @@
 import { Pagable, Result } from "#lib/types";
-import { Deployable } from "../deployer.mjs";
+import Deployer, { Deployable } from "../deployer.mjs";
 import defaultPages from "./page/defaultPage.mjs";
 import { getHelpers } from "#lib/interface/helper";
 import ExtendedFS from "#util/ExtendedFS";
 import { Console } from "@fewu-swg/fewu-utils";
 import { BasicContext as Context, Page } from "@fewu-swg/abstract-types";
 import { existsSync } from "fs";
-import { readdir, writeFile } from "fs/promises";
+import { readdir } from "fs/promises";
 import { basename, dirname, extname, join, relative } from "path";
 
 class PageDeployer implements Deployable {
-    constructor(_ctx: Context) {
+    deployer: Deployer;
 
+    constructor(_ctx: Context, deployer: Deployer) {
+        this.deployer = deployer;
     }
+
     async #deploySingle(ctx: Context, pagable: Pagable, path: string): Promise<Result<void>> {
         let targets = pagable.get(ctx);
         let tasks: Promise<Result<void>>[] = [];
@@ -36,7 +39,7 @@ class PageDeployer implements Deployable {
                 });
                 try {
                     await ExtendedFS.ensure(target);
-                    await writeFile(target, result);
+                    await this.deployer.writeFile(target, result);
                     Console.may.info({
                         msg: 'Deploy success',
                         color: 'LIGHTGREEN'
