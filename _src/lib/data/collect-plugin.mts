@@ -34,6 +34,10 @@ function store(post: Post, keys: string[], targets: PageContainer[]) {
 }
 
 async function collectData(ctx: Context) {
+    ctx.data.categories = [];
+    ctx.data.posts = [];
+    ctx.data.sources = {};
+    ctx.data.tags = [];
     let posts = await Source.traverse(ctx, 'post', ctx.config.excluded_files);
     await Promise.all(posts.map(path => (async () => {
         let post = await Source.read(ctx, 'post', path);
