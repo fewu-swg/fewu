@@ -3,8 +3,9 @@ import { Plugin, BasicContext } from "@fewu-swg/abstract-types";
 import { Console } from "@fewu-swg/fewu-utils";
 
 export default class _log_plugin implements Plugin {
+    __fewu_plugin_id: string = 'builtin.extend.logger';
     __fewu_is_plugin = true;
-    __fewu_plugin_name: string = 'Builtin<logger>';
+    __fewu_plugin_name: string = 'Builtin<Extend::Logger>';
     exports = {
         renderers: [],
         parsers: [],

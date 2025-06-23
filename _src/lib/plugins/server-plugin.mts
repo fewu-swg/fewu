@@ -22,6 +22,7 @@ function registerWatchTask(ctx: BasicContext, path: string, from: string) {
 }
 
 export default class _ServerPlugin implements Plugin {
+    __fewu_plugin_id: string = 'builtin.extend.server';
     __fewu_is_plugin: boolean = true;
     __fewu_plugin_name = 'Builtin<Extend::Server>';
 

@@ -55,6 +55,7 @@ async function collectData(ctx: Context) {
 }
 
 export default class _core_collect_plugin implements Plugin {
+    __fewu_plugin_id: string = 'builtin.core.collector';
     __fewu_is_plugin: boolean = true;
     __fewu_plugin_name: string = `Builtin<Core::Collector>`;
     exports = {
