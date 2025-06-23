@@ -31,8 +31,9 @@ export class PluginResolver {
     async loadPlugins(plugin_list: Plugin[], current_context: BasicContext = this.ctx) {
         let promises: Promise<void>[] = [];
         for (const plugin of plugin_list) {
-            current_context.extend.append_renderers.push(...plugin.exports.renderers);
-            current_context.extend.append_parsers.push(...plugin.exports.parsers);
+            current_context.extend.append_renderers.push(...plugin.exports.renderers ?? []);
+            current_context.extend.append_parsers.push(...plugin.exports.parsers ?? []);
+            current_context.extend.append_deployers.push(...plugin.exports.deployers ?? []);
             promises.push(Promise.resolve(plugin.assigner(current_context)));
             Console.log({
                 color: 'CYAN',
@@ -40,6 +41,9 @@ export class PluginResolver {
             }, {
                 color: 'LIGHTMAGENTA',
                 msg: plugin.__fewu_plugin_name
+            }, {
+                color: 'DARKGREY',
+                msg: plugin.__fewu_plugin_id
             });
         }
         await Promise.all(promises);
