@@ -1,6 +1,6 @@
 // import Context from "#lib/fewu/context";
 import { Post, Scaffold } from "#lib/types";
-import { BasicContext as Context } from "@fewu-swg/abstract-types";
+import { BasicContext as Context, FileBinding } from "@fewu-swg/abstract-types";
 import { resolveContent } from "#lib/local/mod/post"
 
 import ExtendedFS from "#util/ExtendedFS";
@@ -69,9 +69,7 @@ export default class Source {
         post.author = resolved.properties.author as string ?? ctx.config.author;
         post.categories = Array.isArray(categoryProp) ? categoryProp : String(categoryProp).split(" ").filter(v => v !== '');
         post.comments = resolved.properties.comments ? true : false;
-        post.content = await ctx.extend.Renderer.render(resolved.postContent, path, { ctx });
         post.date = moment(resolved.properties.date);
-        post.excerpt = await ctx.extend.Renderer.render(resolved.postIntroduction, path, { ctx });
         post.full_source = path;
         post.language = resolved.properties.language as string ?? ctx.config.language;
         post.layout = resolved.properties.layout ?? ctx.config.default_layout;
@@ -88,6 +86,35 @@ export default class Source {
         post.relative_path = post.source;
         post.updated = moment(fileStat.ctime);
         post.path = join(ctx.PUBLIC_DIRECTORY, post.source);
+        // pre-render content
+        let content_binding: FileBinding = {
+            source: {
+                path,
+                content: resolved.postContent
+            },
+            target: {
+                content
+            }
+        }
+        let excerpt_binding: FileBinding = {
+            source: {
+                path,
+                content: resolved.postIntroduction
+            },
+            target: {
+                content
+            }
+        };
+        let content_result = await ctx.Renderer.render(content_binding, {ctx});
+        let excerpt_result = await ctx.Renderer.render(excerpt_binding, {ctx});
+        if(content_result.status === 'Err'){
+            throw content_result.value;
+        }
+        if(excerpt_result.status === 'Err'){
+            throw excerpt_result.value;
+        }
+        post.content = content_binding.target.content;
+        post.excerpt = excerpt_binding.target.content;
         return post as Post;
     }
 
