@@ -1,6 +1,7 @@
 import { PageContainer, Post } from "#lib/types";
 import { Source, Theme } from "#lib/local/local";
 import { BasicContext as Context, Plugin, Page } from "@fewu-swg/abstract-types";
+import { Console } from "@fewu-swg/fewu-utils";
 
 function post_sort(a: Page, b: Page): number {
     return a?.date?.isBefore(b.date)
@@ -52,6 +53,18 @@ async function collectData(ctx: Context) {
     ctx.data.tags.sort((a, b) => a.key > b.key ? 1 : -1);
     await Theme.executePlugins(ctx);
     await Theme.getI18n(ctx);
+    Console.info({
+        msg: `DATA SUMMARY`,
+        color: `GREEN`
+    });
+    Console.info({
+        msg: `Tags`,
+        color: `MAGENTA`
+    }, ctx.data.tags.map(v => v.key));
+    Console.info({
+        msg: `Categories`,
+        color: `MAGENTA`
+    }, ctx.data.categories.map(v => v.key));
 }
 
 export default class _core_collect_plugin implements Plugin {
@@ -64,9 +77,11 @@ export default class _core_collect_plugin implements Plugin {
         deployers: []
     }
     constructor(_: Context) { }
-    
+
     assigner(ctx: Context): void {
         // @ts-ignore
-        ctx.on('$$Process', collectData);
+        ctx.on('$$Process', async (ctx) => {
+            await collectData(ctx);
+        });
     }
 }
