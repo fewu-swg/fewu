@@ -1,6 +1,6 @@
 import { extname } from "path";
 import { Console, NewPromise } from "@fewu-swg/fewu-utils";
-import { __Renderer, BasicContext, FileBinding, Result, ResultStatus } from '@fewu-swg/abstract-types';
+import { __Renderer, BasicContext, FileBinding, Result } from '@fewu-swg/abstract-types';
 import { Renderer as RendererInterface } from "@fewu-swg/abstract-types";
 import AsyncEventEmitter from "#util/AsyncEmitter";
 
@@ -44,8 +44,8 @@ export class Renderer extends AsyncEventEmitter implements RendererInterface {
         let renderer = await this.getSupported(file_binding.source.type ?? extname(file_binding.source.path!));
         if (!renderer) {
             return {
-                status: ResultStatus.Err,
-                value: new Error(`Cannot find suitable renderer`)
+                status: 'Err',
+                value: Error(`Cannot find suitable renderer`)
             }
         }
         let result = await renderer.assignTask(file_binding, provides);
@@ -56,14 +56,14 @@ export class Renderer extends AsyncEventEmitter implements RendererInterface {
         await this.#initialized;
         let cloned_binding = structuredClone(file_binding);
         let result = await this.render(cloned_binding, provides);
-        if (result.status === ResultStatus.Err) {
+        if (result.status === 'Err') {
             return ({
-                status: ResultStatus.Err,
+                status: 'Err',
                 value: result.value as Error
             });
         }
         return {
-            status: ResultStatus.Ok,
+            status: 'Ok',
             value: cloned_binding
         }
     }
