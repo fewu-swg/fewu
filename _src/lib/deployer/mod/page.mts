@@ -47,20 +47,27 @@ export default class PageDeployer implements __Deployer {
                         content: ''
                     }
                 };
+                this.#deployer.emit('startTask', ctx, file_binding);
+                this.#deployer.emit('render', ctx, file_binding);
                 const result = await ctx.Renderer.render(file_binding, {
                     site: ctx.data,
                     page,
                     ctx,
                     ...getHelpers(ctx, page as Page)
                 });
+                this.#deployer.emit('afterRender', ctx, file_binding);
                 if (result.status === 'Err') {
                     await ExtendedFS.ensure(target);
                     await writeFile(target, `Error while generating this page!`);
+                    this.#deployer.emit('finishTask', ctx, file_binding);
                     return result;
                 }
                 try {
+                    this.#deployer.emit('deploy', ctx, file_binding);
                     await ExtendedFS.ensure(target);
                     await writeFile(target, file_binding.target.content);
+                    this.#deployer.emit('afterDeploy', ctx, file_binding);
+                    this.#deployer.emit('finishTask', ctx, file_binding);
                     Console.may.info({
                         msg: 'Deploy success',
                         color: 'LIGHTGREEN'
