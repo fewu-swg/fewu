@@ -17,7 +17,8 @@ const defaultConfig: Config = {
     excluded_files: [] as string[],
     plugins: [
         'fewu-renderer-.*',
-        'fewu-plugin-.*'
+        'fewu-plugin-.*',
+        'fewu-deployer-.*'
     ],
     plugin_configs: {}
 }
