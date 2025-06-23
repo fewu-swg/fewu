@@ -28,7 +28,8 @@ export default class _ServerPlugin implements Plugin {
 
     exports = {
         parsers: [],
-        renderers: []
+        renderers: [],
+        deployers: []
     };
     
     constructor(_: BasicContext) {

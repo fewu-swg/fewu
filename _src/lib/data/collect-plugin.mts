@@ -60,7 +60,8 @@ export default class _core_collect_plugin implements Plugin {
     __fewu_plugin_name: string = `Builtin<Core::Collector>`;
     exports = {
         renderers: [],
-        parsers: []
+        parsers: [],
+        deployers: []
     }
     constructor(_: Context) { }
     

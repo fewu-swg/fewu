@@ -9,6 +9,7 @@ export default class _log_plugin implements Plugin {
     exports = {
         renderers: [],
         parsers: [],
+        deployers: []
     };
     constructor(_: BasicContext) {
 
