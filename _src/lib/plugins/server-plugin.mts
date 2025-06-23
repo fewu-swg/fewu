@@ -43,7 +43,7 @@ export default class _ServerPlugin implements Plugin {
         if (Argv['-s'] || Argv['--server']) {
             const server = new Server();
             if (Argv['-S'] || Argv['--server']) {
-                ctx.on('afterDeploy', async (_ctx) => {
+                ctx.on('ready', async (_ctx) => {
                     server.create(_ctx).listen(parseInt(Argv['-S']?.[0] || Argv['--server']?.[0]) || 3000);
                     try {
                         await _ctx.extend.Theme.watch(_ctx, (_ctx: BasicContext, _: string, path: string, from: string) => {
