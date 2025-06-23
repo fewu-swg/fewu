@@ -10,11 +10,9 @@
         "fs": "0.0.1-security",
         "mime": "^4.0.7",
         "moment": "^2.30.1",
-        "sass": "^1.89.2",
         "yaml": "^2.8.0"
     },
     "imports": {
-        "#modules/*": "./_modules/*",
         "#util/*": "./_dist/util/*.mjs",
         "#lib/*": "./_dist/lib/*.mjs"
     },
