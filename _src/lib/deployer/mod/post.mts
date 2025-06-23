@@ -10,8 +10,8 @@ import { BasicContext as Context, Page } from "@fewu-swg/abstract-types";
 export default class PostDeployer implements Deployable {
     deployer: Deployer;
 
-    constructor(_ctx: Context, deployer: Deployer) {
-        this.deployer = deployer;
+    constructor(_ctx: Context) {
+        this.deployer = _ctx.extend.Deployer;
     }
 
     async #deploySingle(ctx: Context, post: Page): Promise<Result<void>> {

@@ -20,9 +20,9 @@ class Deployer {
 
     constructor(ctx: Context) {
         this.deployers = [
-            new PostDeployer(ctx, this),
-            new PageDeployer(ctx, this),
-            new SourceDeployer(ctx, this)
+            new PostDeployer(ctx),
+            new PageDeployer(ctx),
+            new SourceDeployer(ctx)
         ];
         // @ts-ignore
         ctx.on('$$Deploy', async (_ctx: Context) => {

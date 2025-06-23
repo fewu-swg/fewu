@@ -28,8 +28,8 @@ class SourceDeployer implements Deployable {
     #constructComplete: Promise<void> | undefined;
     deployer: Deployer;
 
-    constructor(ctx: Context, deployer: Deployer) {
-        this.deployer = deployer;
+    constructor(ctx: Context) {
+        this.deployer = ctx.extend.Deployer;
         let { promise, resolve } = NewPromise.withResolvers<void>();
         this.#constructComplete = promise;
         resolve();

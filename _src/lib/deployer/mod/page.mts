@@ -12,8 +12,8 @@ import { basename, dirname, extname, join, relative } from "path";
 class PageDeployer implements Deployable {
     deployer: Deployer;
 
-    constructor(_ctx: Context, deployer: Deployer) {
-        this.deployer = deployer;
+    constructor(_ctx: Context) {
+        this.deployer = _ctx.extend.Deployer;
     }
 
     async #deploySingle(ctx: Context, pagable: Pagable, path: string): Promise<Result<void>> {
