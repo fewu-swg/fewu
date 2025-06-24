@@ -8,11 +8,9 @@ export default class PostDeployer implements __Deployer {
     __fewu__: string = 'deployer';
     type: RegExp;
     #ctx: BasicContext;
-    #deployer: Deployer;
 
     constructor(ctx: BasicContext) {
         this.#ctx = ctx;
-        this.#deployer = ctx.Deployer;
         this.type = new RegExp(`()\..*?$`);
     }
 
@@ -34,26 +32,26 @@ export default class PostDeployer implements __Deployer {
                 content: ``
             }
         };
-        this.#deployer.emit('startTask', ctx, binding);
-        this.#deployer.emit('render', ctx, binding);
+        await ctx.Deployer.emit('startTask', ctx, binding);
+        await ctx.Deployer.emit('render', ctx, binding);
         let result = await ctx.Renderer.render(binding, {
             page: post,
             site: ctx.data,
             ctx,
             ...getHelpers(ctx, post)
         });
-        this.#deployer.emit('afterRender', ctx, binding);
+        await ctx.Deployer.emit('afterRender', ctx, binding);
         if (result.status === 'Err') {
             await ExtendedFS.ensure(target_path);
             await writeFile(target_path, `Error generating this page`);
-            this.#deployer.emit('finishTask', ctx, binding);
+            await ctx.Deployer.emit('finishTask', ctx, binding);
         }
         try {
-            this.#deployer.emit('deploy', ctx, binding);
+            await ctx.Deployer.emit('deploy', ctx, binding);
             await ExtendedFS.ensure(binding.target.path!);
             await writeFile(binding.target.path!, binding.target.content);
-            this.#deployer.emit('afterDeploy', ctx, binding);
-            this.#deployer.emit('finishTask', ctx, binding);
+            await ctx.Deployer.emit('afterDeploy', ctx, binding);
+            await ctx.Deployer.emit('finishTask', ctx, binding);
 
             return {
                 status: 'Ok',
