@@ -8,22 +8,21 @@ import { watch } from "node:fs";
 let timer: NodeJS.Timeout;
 
 function registerWatchTask(ctx: BasicContext, { includeSource = false } = {}) {
-    timer && clearInterval(timer);
+    timer && clearTimeout(timer);
     // debounce
-    timer = setInterval(async () => {
+    timer = setTimeout(async () => {
         if (includeSource) {
             await ctx.emit('beforeProcess', ctx);
 
             await ctx.emit('$$Process', ctx);
 
             await ctx.emit('afterProcess', ctx);
-        }
 
-        await ctx.emit('beforeDeploy', ctx);
+            await ctx.emit('beforeDeploy', ctx);
+        }
 
         await ctx.emit('$$Deploy', ctx);
 
-        await ctx.emit('afterDeploy', ctx);
     }, 1500);
 }
 
@@ -52,15 +51,21 @@ export default class _ServerPlugin implements Plugin {
                 ctx.on('ready', async (_ctx) => {
                     server.create(_ctx).listen(parseInt(Argv['-S']?.[0] || Argv['--server']?.[0]) || 3000);
                     try {
-                        watch(ctx.SOURCE_DIRECTORY, { recursive: true }, (event) => {
-                            registerWatchTask(ctx, { includeSource: true });
+                        watch(ctx.SOURCE_DIRECTORY, { recursive: true, }, (event, filename) => {
+                            if (!filename?.startsWith('git') && event === 'change') {
+                                Console.log(`Source reload Triggered: ${filename}`);
+                                registerWatchTask(ctx, { includeSource: true });
+                            }
                         });
-                        watch(ctx.THEME_DIRECTORY, { recursive: true }, (event) => {
-                            registerWatchTask(ctx);
+                        watch(ctx.THEME_DIRECTORY, { recursive: true }, (event, filename) => {
+                            if (!filename?.startsWith('git') && event === 'change') {
+                                Console.log(`Theme reload Triggered: ${filename}`);
+                                registerWatchTask(ctx);
+                            }
                         });
                     } catch (error) {
                         console.error(error);
-                        Console.error(`Your current system does not support Node.js fs.watch (recursively) feature. Live-change will not work.`);
+                        Console.error(`Unexpected error. Your current system might not support Node.js fs.watch (recursively) feature. Live-change will not work.`);
                     }
                 });
             }
