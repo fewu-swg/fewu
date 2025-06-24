@@ -8,6 +8,8 @@ async function App() {
 
     await ctx.emit('afterStartup', ctx);
 
+    await ctx.emit('load', ctx);
+
     await ctx.emit('beforeProcess', ctx);
 
     await ctx.emit('$$Process', ctx);
