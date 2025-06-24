@@ -7,15 +7,17 @@ import { watch } from "node:fs";
 
 let timer: NodeJS.Timeout;
 
-function registerWatchTask(ctx: BasicContext) {
+function registerWatchTask(ctx: BasicContext, { includeSource = false } = {}) {
     timer && clearInterval(timer);
     // debounce
     timer = setInterval(async () => {
-        await ctx.emit('beforeProcess', ctx);
+        if (includeSource) {
+            await ctx.emit('beforeProcess', ctx);
 
-        await ctx.emit('$$Process', ctx);
+            await ctx.emit('$$Process', ctx);
 
-        await ctx.emit('afterProcess', ctx);
+            await ctx.emit('afterProcess', ctx);
+        }
 
         await ctx.emit('beforeDeploy', ctx);
 
@@ -50,7 +52,10 @@ export default class _ServerPlugin implements Plugin {
                 ctx.on('ready', async (_ctx) => {
                     server.create(_ctx).listen(parseInt(Argv['-S']?.[0] || Argv['--server']?.[0]) || 3000);
                     try {
-                        watch(ctx.BASE_DIRECTORY, { recursive: true }, (event) => {
+                        watch(ctx.SOURCE_DIRECTORY, { recursive: true }, (event) => {
+                            registerWatchTask(ctx, { includeSource: true });
+                        });
+                        watch(ctx.THEME_DIRECTORY, { recursive: true }, (event) => {
                             registerWatchTask(ctx);
                         });
                     } catch (error) {
