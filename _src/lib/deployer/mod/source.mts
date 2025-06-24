@@ -22,7 +22,6 @@ export default class CommonSourceDeployer implements __Deployer {
         };
     }
 
-    // this function should not be called.
     async deployAll(ctx: BasicContext): Promise<Result> {
         return {
             status: 'Ok',

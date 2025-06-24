@@ -1,6 +1,6 @@
 import { BasicContext, Result, __Deployer, Page, FileBinding, Deployer } from "@fewu-swg/abstract-types";
 import { join, relative } from "node:path";
-import { readdir, readFile, writeFile } from "node:fs/promises";
+import { readdir, readFile, stat, writeFile } from "node:fs/promises";
 import { getHelpers } from "#lib/interface/helper";
 import ExtendedFS from "#util/ExtendedFS";
 
@@ -26,7 +26,8 @@ export default class PostDeployer implements __Deployer {
         let binding: FileBinding = {
             source: {
                 path: layout_path,
-                content: layout_content
+                content: layout_content,
+                stat: await stat(layout_path)
             },
             target: {
                 path: target_path,

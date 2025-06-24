@@ -1,7 +1,7 @@
 import { Pagable } from "#lib/types";
 import { __Deployer, BasicContext, FileBinding, Result, Deployer, Page } from "@fewu-swg/abstract-types";
 import { basename, extname, join, relative } from "node:path";
-import { readdir, readFile, writeFile } from "node:fs/promises";
+import { readdir, readFile, stat, writeFile } from "node:fs/promises";
 import defaultPages from "./page/defaultPage.mjs";
 import ExtendedFS from "#util/ExtendedFS";
 import { getHelpers } from "#lib/interface/helper";
@@ -40,7 +40,8 @@ export default class PageDeployer implements __Deployer {
                 let file_binding: FileBinding = {
                     source: {
                         path,
-                        content
+                        content,
+                        stat: await stat(path)
                     },
                     target: {
                         path: target,
