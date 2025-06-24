@@ -1,6 +1,6 @@
-import { BasicContext, Result, __Deployer, Page, FileBinding, Deployer } from "@fewu-swg/abstract-types";
+import { BasicContext, Result, __Deployer, Page, FileBinding, TargetFile } from "@fewu-swg/abstract-types";
 import { join, relative } from "node:path";
-import { readdir, readFile, stat, writeFile } from "node:fs/promises";
+import { readdir, readFile, writeFile } from "node:fs/promises";
 import { getHelpers } from "#lib/interface/helper";
 import ExtendedFS from "#util/ExtendedFS";
 
@@ -21,37 +21,45 @@ export default class PostDeployer implements __Deployer {
         let layout_file = (await readdir(layout_dir)).filter(v => v.match(reg))[0];
         let layout_path = join(layout_dir, layout_file);
         let layout_content = (await readFile(layout_path)).toString();
-        let binding: FileBinding = {
+        let target_bind: TargetFile = {
+            path: target_path,
+            content: ``
+        }
+        let render_binding: FileBinding = {
             source: {
                 path: layout_path,
-                content: layout_content,
-                stat: await stat(layout_path)
+                content: layout_content
             },
-            target: {
-                path: target_path,
-                content: ``
-            }
+            target: target_bind
         };
-        await ctx.Deployer.emit('startTask', ctx, binding);
-        await ctx.Deployer.emit('render', ctx, binding);
-        let result = await ctx.Renderer.render(binding, {
+        let event_binding: FileBinding = {
+            source: {
+                path: join(ctx.SOURCE_DIRECTORY, post.source),
+                content: post.raw!,
+                stat: post.stat
+            },
+            target: target_bind
+        }
+        await ctx.Deployer.emit('startTask', ctx, event_binding);
+        await ctx.Deployer.emit('render', ctx, event_binding);
+        let result = await ctx.Renderer.render(render_binding, {
             page: post,
             site: ctx.data,
             ctx,
             ...getHelpers(ctx, post)
         });
-        await ctx.Deployer.emit('afterRender', ctx, binding);
+        await ctx.Deployer.emit('afterRender', ctx, event_binding);
         if (result.status === 'Err') {
             await ExtendedFS.ensure(target_path);
             await writeFile(target_path, `Error generating this page`);
-            await ctx.Deployer.emit('finishTask', ctx, binding);
+            await ctx.Deployer.emit('finishTask', ctx, event_binding);
         }
         try {
-            await ctx.Deployer.emit('deploy', ctx, binding);
-            await ExtendedFS.ensure(binding.target.path!);
-            await writeFile(binding.target.path!, binding.target.content);
-            await ctx.Deployer.emit('afterDeploy', ctx, binding);
-            await ctx.Deployer.emit('finishTask', ctx, binding);
+            await ctx.Deployer.emit('deploy', ctx, event_binding);
+            await ExtendedFS.ensure(target_bind.path!);
+            await writeFile(target_bind.path!, target_bind.content);
+            await ctx.Deployer.emit('afterDeploy', ctx, event_binding);
+            await ctx.Deployer.emit('finishTask', ctx, event_binding);
 
             return {
                 status: 'Ok',
