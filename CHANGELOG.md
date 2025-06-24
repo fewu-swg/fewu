@@ -1,5 +1,31 @@
 # CHANGELOG
 
+## REL3.6.0 - 2025-06-24
+
+### IMPORTANTS
+
+* `Sass` deployer is separated to `@fewu-swg/fewu-deployer-sass`.
+
+* Rewrite `Deployer` and `Renderer`.
+
+* (Partial) Remove compat for old style plugins.
+
+* Plugins should export a `deployers: __Deployer[]`.
+
+* Expose `load` event.
+
+### COMPATIBILITIES
+
+* Remove monitor for deployer.
+
+### UTIL CHANGE
+
+* Add more types to `abstract-types`.
+
+* `Context.extend.Renderer` is moved to `Context.Renderer`.
+
+* `Context.extend.Deployer` is moved to `Context.Deployer`.
+
 ## REL3.5.2 - 2025-06-17
 
 * Add monitor for deployer.
@@ -26,7 +52,7 @@
 
 * `Context.Renderer` is moved to `Context.extend.Renderer`.
 
-* `Context.extend.Deployer` is moved to `Context.extend.Deployer`.
+* `Context.Deployer` is moved to `Context.extend.Deployer`.
 
 ### UTIL CHANGES
 
