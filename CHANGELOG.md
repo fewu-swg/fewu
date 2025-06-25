@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## REL3.6.1 - 2025-06-25
+
+* Construct `Context` in `App` function. Remove `ctx` export.
+
 ## REL3.6.0 - 2025-06-24
 
 ### IMPORTANTS

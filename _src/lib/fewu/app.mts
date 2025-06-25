@@ -1,8 +1,9 @@
 import Context from '#lib/fewu/context';
 
-const ctx = new Context();
 
 async function App() {
+
+    const ctx = new Context();
 
     await ctx.initialized;
 
@@ -29,6 +30,5 @@ async function App() {
 
 export default App;
 export {
-    App,
-    ctx
+    App
 }
