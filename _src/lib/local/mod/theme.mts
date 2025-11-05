@@ -4,6 +4,7 @@ import ExtendedFS from "#util/ExtendedFS";
 import { existsSync, watch, WatchEventType } from "fs";
 import { readdir } from "fs/promises";
 import { basename, extname, join } from "path";
+import { Console } from "@fewu-swg/fewu-utils";
 
 export default class Theme {
 
@@ -20,6 +21,7 @@ export default class Theme {
             let script = (await import('file://'+scriptPath)).default; // gs this file:// is really important I spend 2 hours to find out why it doesn't work
             if (typeof script === 'function') {
                 script(ctx);
+                Console.may.log(`Loaded theme script:`, scriptPath);
             }
         }
         return;
