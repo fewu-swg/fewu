@@ -27,6 +27,6 @@
         "access": "public"
     },
     "scripts": {
-        "prepublish": "rm _dist/* -r; pnpm tsgo || pnpm tsc"
+        "prepublish": "node ./shell/prepub-rm.mjs"
     }
 }
