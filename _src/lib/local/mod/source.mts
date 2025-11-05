@@ -79,13 +79,13 @@ export default class Source {
         post.properties = resolved.properties;
         post.raw = resolved.postContent;
         post.raw_excerpt = resolved.postIntroduction;
-        post.source = relative(ctx.SOURCE_DIRECTORY, path);
+        post.source = relative(ctx.SOURCE_DIRECTORY, path); // 源文件路径
         post.stat = fileStat;
         post.tags = Array.isArray(tagProp) ? tagProp : String(tagProp).split(" ").filter(v => v !== '');
         post.title = resolved.properties.title ?? "Untitled";
-        post.relative_path = post.source;
+        post.relative_path = resolved.properties.permalink || post.source; // 网站路径
         post.updated = moment(fileStat.ctime);
-        post.path = join(ctx.PUBLIC_DIRECTORY, post.source);
+        post.path = join(ctx.PUBLIC_DIRECTORY, resolved.properties.permalink || post.source); // 本地生成的路径
         // pre-render content
         let content_binding: FileBinding = {
             source: {

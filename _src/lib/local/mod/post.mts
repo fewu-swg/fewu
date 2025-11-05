@@ -1,4 +1,4 @@
-import { EOL } from "os";
+import { detectNewlineGraceful } from 'detect-newline';
 import { resolve } from "./frontMatter.mjs";
 
 let regExps = {
@@ -20,7 +20,9 @@ export async function resolveContent(content: string) {
         ...postProp
     };
     let referencedImages = [];
-    const lines = content.split(EOL);
+    // 检测文件的换行符
+    const newline = detectNewlineGraceful(content) || '\n';
+    const lines = content.split(newline);
 
     let moreIndex = -1; 
     
@@ -34,12 +36,12 @@ export async function resolveContent(content: string) {
 
     if (moreIndex === -1 || moreIndex == lines.length+1) {
         /* No introduction provided */
-        postContent = lines.slice(i).join(EOL);
+        postContent = lines.slice(i).join(newline);
     } else {
-        postContent = lines.slice(moreIndex).join(EOL);
+        postContent = lines.slice(moreIndex).join(newline);
     }
 
-    postIntroduction = lines.slice(i, (moreIndex !== -1) ? moreIndex : 5).join(EOL).replace(/\#*/g, '');
+    postIntroduction = lines.slice(i, (moreIndex !== -1) ? moreIndex : 5).join(newline).replace(/\#*/g, '');
 
     referencedImages = [...postContent.matchAll(regExps.MATCH_IMAGE)].map(v => v[2]);
 

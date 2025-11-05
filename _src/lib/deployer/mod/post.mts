@@ -16,7 +16,7 @@ export default class PostDeployer implements __Deployer {
 
     async #deploySingle(ctx: BasicContext, post: Page): Promise<Result> {
         let reg = new RegExp(`post\.${post.layout}\..*?$`);
-        let target_path = join(ctx.PUBLIC_DIRECTORY, post.source, 'index.html');
+        let target_path = join(post.path, 'index.html');
         let layout_dir = join(ctx.THEME_DIRECTORY, 'layout');
         let layout_file = (await readdir(layout_dir)).filter(v => v.match(reg))[0];
         let layout_path = join(layout_dir, layout_file);

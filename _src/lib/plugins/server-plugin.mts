@@ -1,4 +1,5 @@
 import Server from "./server-plugin/server.mjs";
+import LocalManager from "./server-plugin/local-manager.mjs";
 import { Argv, Console } from "@fewu-swg/fewu-utils";
 import type { BasicContext, Plugin } from "@fewu-swg/abstract-types";
 import { join } from "node:path";
@@ -50,6 +51,11 @@ export default class _ServerPlugin implements Plugin {
             if (Argv['-S'] || Argv['--server']) {
                 ctx.on('ready', async (_ctx) => {
                     server.create(_ctx).listen(parseInt(Argv['-S']?.[0] || Argv['--server']?.[0]) || 3000);
+                    
+                    // 启动本地文件管理器，监听post_dir目录
+                    const localManager = new LocalManager(_ctx);
+                    localManager.start();
+                    
                     try {
                         watch(ctx.SOURCE_DIRECTORY, { recursive: true, }, (event, filename) => {
                             if (!filename?.startsWith('git') && event === 'change') {

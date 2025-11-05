@@ -1,7 +1,7 @@
 {
     "name": "@fewu-swg/fewu",
     "main": "_dist/lib/fewu/app.mjs",
-    "version": "3.6.3",
+    "version": "3.7.0",
     "repository": {
         "url": "https://github.com/fewu-swg/fewu"
     },
