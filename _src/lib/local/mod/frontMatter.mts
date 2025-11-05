@@ -1,11 +1,11 @@
-import { EOL } from "os";
-import { parse } from "yaml";
+import { detectNewlineGraceful } from "detect-newline";
 import ObjectParser from "#lib/object-parser/object-parser";
 
 declare type markerReturnType = [Record<string, string>, number];
 
 const languageMarkerProcess: Record<string, (content: string) => Promise<markerReturnType>> = {
     '---': async function (content) {
+        let EOL = detectNewlineGraceful(content);
         let [config, i] = configString(content.replace('---' + EOL, ''), '---', 1);
         let obj = await ObjectParser.parse(config, {
             type: 'yaml',
@@ -24,6 +24,7 @@ const languageMarkerProcess: Record<string, (content: string) => Promise<markerR
 };
 
 function configString(content: string, end: string, i = 0): [string, number] {
+    let EOL = detectNewlineGraceful(content);
     let lines = content.split(EOL);
     let stackedConfigLines: string[] = [];
     for (let line of lines) {
