@@ -1,6 +1,6 @@
 // import Context from "#lib/fewu/context";
 import { Post, Scaffold } from "#lib/types";
-import { BasicContext as Context, FileBinding, UPath } from "@fewu-swg/abstract-types";
+import { BasicContext as Context, FileBinding } from "@fewu-swg/abstract-types";
 import { resolveContent } from "#lib/local/mod/post"
 
 import ExtendedFS from "#util/ExtendedFS";
@@ -9,7 +9,7 @@ import { readFile, stat } from "fs/promises";
 import { extname, join, relative, sep } from "path";;
 import moment from "moment";
 import { watch, WatchEventType } from "fs";
-import { Console, Text } from "@fewu-swg/fewu-utils";
+import { Console, Text, UPath } from "@fewu-swg/fewu-utils";
 
 const ignoredFileTypes = [
     '.png', '.gif', '.webp', '.bmp', '.svg', /^\.pptx?$/, /^\.jpe?g?$/, /^\..*?ignore$/, /\.ignore\..*$/

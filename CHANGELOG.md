@@ -1,5 +1,9 @@
 # CHANGELOG
 
+### REL3.7.2 - 2025-11-18
+
+* Bugfix
+
 ## REL3.7.1 - 2025-11-18
 
 * Add experimental `UPath` API for better Cross-platform capability.
