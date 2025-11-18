@@ -3,10 +3,10 @@ import { version } from "./fewu.mjs";
 import defaultConfig, { mixConfig, readConfig } from "./config.mjs";
 import { PluginResolver } from "./plugind.mjs";
 
-import { Argv, Console } from "@fewu-swg/fewu-utils";
+import { Argv, Console, UPath } from "@fewu-swg/fewu-utils";
 import AsyncEventEmitter from "#util/AsyncEmitter";
 
-import { join } from "path";
+import { join, normalize, sep } from "path";
 import { existsSync } from "fs";
 import DataStorage from "#lib/data/data";
 import { Source, Theme } from "#lib/local/local";
@@ -74,10 +74,10 @@ class Context extends AsyncEventEmitter implements BasicContext {
         };
         this.i18ns = [];
 
-        this.BASE_DIRECTORY = baseDirectory;
-        this.PUBLIC_DIRECTORY = join(baseDirectory, CONFIG.public_dir);
-        this.SOURCE_DIRECTORY = join(baseDirectory, CONFIG.source_dir);
-        this.THEME_DIRECTORY = join(baseDirectory, 'themes', CONFIG.theme);
+        this.BASE_DIRECTORY = normalize(baseDirectory);
+        this.PUBLIC_DIRECTORY = join(this.BASE_DIRECTORY, new UPath(CONFIG.public_dir, 'auto').toString(sep));
+        this.SOURCE_DIRECTORY = join(this.BASE_DIRECTORY, new UPath(CONFIG.source_dir, 'auto').toString(sep));
+        this.THEME_DIRECTORY = join(this.BASE_DIRECTORY, 'themes', CONFIG.theme);
         this.CONFIG_PATH = CONFIG_PATH;
 
         this.Renderer = new Renderer(this);

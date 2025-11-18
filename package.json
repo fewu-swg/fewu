@@ -6,12 +6,12 @@
         "url": "https://github.com/fewu-swg/fewu"
     },
     "dependencies": {
-        "@fewu-swg/fewu-utils": "^1.0.1",
+        "@fewu-swg/fewu-utils": "^1.1.0",
         "detect-newline": "^4.0.1",
         "fs": "0.0.1-security",
-        "mime": "^4.0.7",
+        "mime": "^4.1.0",
         "moment": "^2.30.1",
-        "yaml": "^2.8.0"
+        "yaml": "^2.8.1"
     },
     "imports": {
         "#util/*": "./_dist/util/*.mjs",
@@ -19,9 +19,9 @@
     },
     "type": "module",
     "devDependencies": {
-        "@fewu-swg/abstract-types": "^1.3.8",
-        "@types/node": "^24.0.3",
-        "typescript": "^5.8.3"
+        "@fewu-swg/abstract-types": "^1.4.1",
+        "@types/node": "^24.10.1",
+        "typescript": "^5.9.3"
     },
     "publishConfig": {
         "access": "public"

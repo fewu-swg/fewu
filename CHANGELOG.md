@@ -1,6 +1,11 @@
 # CHANGELOG
 
-# REL3.7.0 - 2025-11-05
+## REL3.7.1 - 2025-11-18
+
+* Add experimental `UPath` API for better Cross-platform capability.
+> The `UPath` API belongs to `fewu-utils` and is under heavy development, any breaking changes can be made.
+
+## REL3.7.0 - 2025-11-05
 
 * Add Local Manager to auto watch new files and add permalink.
 

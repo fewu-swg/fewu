@@ -1,12 +1,12 @@
 // import Context from "#lib/fewu/context";
 import { Post, Scaffold } from "#lib/types";
-import { BasicContext as Context, FileBinding } from "@fewu-swg/abstract-types";
+import { BasicContext as Context, FileBinding, UPath } from "@fewu-swg/abstract-types";
 import { resolveContent } from "#lib/local/mod/post"
 
 import ExtendedFS from "#util/ExtendedFS";
 
 import { readFile, stat } from "fs/promises";
-import { extname, join, relative } from "path";;
+import { extname, join, relative, sep } from "path";;
 import moment from "moment";
 import { watch, WatchEventType } from "fs";
 import { Console, Text } from "@fewu-swg/fewu-utils";
@@ -52,7 +52,7 @@ export default class Source {
     static async read(ctx: Context, type: SourceTypes, path: string) {
         let content = (await readFile(path)).toString();
         if (type === 'post' || type === 'draft') {
-            return this.#readPost(ctx, path, content);
+            return this.#readPost(ctx, new UPath(path, sep), content);
         } else if (type === 'scaffold') {
             return {
                 content
@@ -60,8 +60,8 @@ export default class Source {
         }
     }
 
-    static async #readPost(ctx: Context, path: string, content: string): Promise<Post> {
-        let fileStat = await stat(path);
+    static async #readPost(ctx: Context, path: UPath, content: string): Promise<Post> {
+        let fileStat = await stat(path.toString());
         let resolved = await resolveContent(content);
         let post: Partial<Post> = {};
         let categoryProp = resolved.properties.categories ?? resolved.properties.category;
@@ -70,7 +70,7 @@ export default class Source {
         post.categories = Array.isArray(categoryProp) ? categoryProp : String(categoryProp).split(" ").filter(v => v !== '');
         post.comments = resolved.properties.comments ? true : false;
         post.date = moment(resolved.properties.date);
-        post.full_source = path;
+        post.full_source = path.toString();
         post.language = resolved.properties.language as string ?? ctx.config.language;
         post.layout = resolved.properties.layout ?? ctx.config.default_layout;
         post.length = Text.countWords(content);
@@ -79,17 +79,27 @@ export default class Source {
         post.properties = resolved.properties;
         post.raw = resolved.postContent;
         post.raw_excerpt = resolved.postIntroduction;
-        post.source = relative(ctx.SOURCE_DIRECTORY, path); // 源文件路径
+        post.source = relative(ctx.SOURCE_DIRECTORY, path.toString()); // 源文件路径
         post.stat = fileStat;
         post.tags = Array.isArray(tagProp) ? tagProp : String(tagProp).split(" ").filter(v => v !== '');
         post.title = resolved.properties.title ?? "Untitled";
         post.relative_path = resolved.properties.permalink || post.source; // 网站路径
         post.updated = moment(fileStat.ctime);
         post.path = join(ctx.PUBLIC_DIRECTORY, resolved.properties.permalink || post.source); // 本地生成的路径
+        // new experimental path api definition
+        post.source_relative_path = new UPath(relative(ctx.SOURCE_DIRECTORY, path.toString()), sep);
+        post.source_absolute_path = path;
+        post.build_relative_path = resolved.properties.permalink ? new UPath(resolved.properties.permalink, 'url') : post.source_relative_path;
+        post.build_absolute_path = new UPath(join(ctx.PUBLIC_DIRECTORY, post.build_relative_path.toString(sep)), sep);
+        post.web_relative_path = resolved.properties.permalink ? new UPath(resolved.properties.permalink, 'url') : post.source_relative_path;
+        post.web_absolute_path = new UPath(join(ctx.config.url, post.web_relative_path.toString('url')), 'url');
+
+        post.build_relative_path.sep = sep;
+        post.web_relative_path.sep = '/';
         // pre-render content
         let content_binding: FileBinding = {
             source: {
-                path,
+                path: path.toString(),
                 content: resolved.postContent
             },
             target: {
@@ -98,19 +108,19 @@ export default class Source {
         }
         let excerpt_binding: FileBinding = {
             source: {
-                path,
+                path: path.toString(),
                 content: resolved.postIntroduction
             },
             target: {
                 content
             }
         };
-        let content_result = await ctx.Renderer.render(content_binding, {ctx});
-        let excerpt_result = await ctx.Renderer.render(excerpt_binding, {ctx});
-        if(content_result.status === 'Err'){
+        let content_result = await ctx.Renderer.render(content_binding, { ctx });
+        let excerpt_result = await ctx.Renderer.render(excerpt_binding, { ctx });
+        if (content_result.status === 'Err') {
             throw content_result.value;
         }
-        if(excerpt_result.status === 'Err'){
+        if (excerpt_result.status === 'Err') {
             throw excerpt_result.value;
         }
         post.content = content_binding.target.content;
