@@ -1,6 +1,6 @@
 import { Pagable } from "#lib/types";
-import { __Deployer, BasicContext, FileBinding, Result, Deployer, Page } from "@fewu-swg/abstract-types";
-import { basename, extname, join, relative } from "node:path";
+import { __Deployer, BasicContext, FileBinding, Result, Page, UPath } from "@fewu-swg/abstract-types";
+import { basename, extname, join, normalize, posix, relative, sep } from "node:path";
 import { readdir, readFile, stat, writeFile } from "node:fs/promises";
 import defaultPages from "./page/defaultPage.mjs";
 import ExtendedFS from "#util/ExtendedFS";
@@ -22,7 +22,6 @@ export default class PageDeployer implements __Deployer {
         this.#initialized = promise;
         ctx.on('afterProcess', (_ctx) => {
             this.#pages.push(..._ctx.extend.append_pages);
-            console.log(this.#pages);
             resolve();
         });
     }
@@ -32,6 +31,7 @@ export default class PageDeployer implements __Deployer {
         let tasks: Promise<Result>[] = [];
         for (let i = 0; i < targets.length; i++) {
             const target = targets[i];
+            let relative_path = new UPath(normalize(relative(ctx.PUBLIC_DIRECTORY, target)),sep);
             const page: Page = {
                 language: ctx.config.language,
                 current: i,
@@ -39,7 +39,13 @@ export default class PageDeployer implements __Deployer {
                 path: target,
                 relative_path: relative(ctx.PUBLIC_DIRECTORY, target),
                 source: path,
-                full_source: path
+                full_source: path,
+                source_absolute_path: new UPath('None','url'),
+                source_relative_path: new UPath('None','url'),
+                build_absolute_path: new UPath(normalize(target), sep),
+                build_relative_path: relative_path,
+                web_relative_path: new UPath(relative_path.toString('url'),'url'),
+                web_absolute_path: new UPath(posix.join(ctx.config.url,relative_path.toString('url')), 'url'),
             };
             let task = (async (): Promise<Result> => {
                 let content = (await readFile(path)).toString();
@@ -112,7 +118,6 @@ export default class PageDeployer implements __Deployer {
             }
         }
         let typename = this.type.exec(path)!.groups![0];
-        let pagable = this.#pages.filter(v => v.type == typename);
         return {
             status: 'Err',
             value: Error(`Method not implemented.`)
