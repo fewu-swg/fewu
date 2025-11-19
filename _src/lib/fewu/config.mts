@@ -1,7 +1,7 @@
-import { ConfigNotParsableError } from "#lib/interface/error";
 import EXIT_CODES from "#lib/interface/exit-codes";
 import ObjectParser from "#lib/object-parser/object-parser";
 import { Config } from "@fewu-swg/abstract-types";
+import { Console } from "@fewu-swg/fewu-utils";
 
 const defaultConfig: Config = {
     title: 'Fewu',
@@ -67,7 +67,8 @@ export function readConfig(_baseDir = process.cwd(), configPath: string): partia
     obj = ObjectParser.parseFileSync(configPath);
 
     if (!obj) {
-        throw new ConfigNotParsableError(configPath);
+        Console.error(`Cannot parse config!`);
+        process.exit(EXIT_CODES.CONFIG_UNPARSABLE);
     }
 
     return obj;

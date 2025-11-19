@@ -10,12 +10,12 @@ import { join, normalize, sep } from "path";
 import { existsSync } from "fs";
 import DataStorage from "#lib/data/data";
 import { Source, Theme } from "#lib/local/local";
-import { ConfigNotFoundError } from "#lib/interface/error";
 import _server_plugin from "#lib/plugins/server-plugin";
 import _log_plugin from "#lib/plugins/log-plugin";
 import _core_collect_plugin from "#lib/data/collect-plugin";
 import { Renderer } from "#lib/renderer/renderer";
 import { Deployer } from "#lib/deployer/deployer";
+import EXIT_CODES from "#lib/interface/exit-codes";
 
 class Context extends AsyncEventEmitter implements BasicContext {
 
@@ -52,7 +52,12 @@ class Context extends AsyncEventEmitter implements BasicContext {
             }
         }
         if (!CONFIG_PATH) {
-            throw new ConfigNotFoundError(configPaths);
+            Console.error(`Cannot find config file! Also tried`,{
+                color: `WHITE`,
+                effect: `BOLD`,
+                msg: `config.yaml config.yml _config.yaml _config.yml config.json`
+            });
+            process.exit(EXIT_CODES.CONFIG_NOT_FOUND);
         }
         Console.log(`Using config: ${CONFIG_PATH}`);
 
