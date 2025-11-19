@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## REL3.7.3 - 2025-11-19
+
+* Add exit codes for debugging.
+
+* Theme resolver will now try to catch errors while loading external script.
+
 ### REL3.7.2 - 2025-11-18
 
 * Bugfix
