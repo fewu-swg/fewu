@@ -5,23 +5,38 @@ import { existsSync, watch, WatchEventType } from "fs";
 import { readdir } from "fs/promises";
 import { basename, extname, join } from "path";
 import { Console } from "@fewu-swg/fewu-utils";
+import EXIT_CODES from "#lib/interface/exit-codes";
 
 export default class Theme {
 
     static async executePlugins(ctx: Context): Promise<void> {
         let pluginDir = join(ctx.THEME_DIRECTORY, 'scripts');
         if (!existsSync(pluginDir)) {
+            Console.may.info(`Theme does not provide any external scripts.`);
             return;
         }
         let scriptPaths = (await readdir(pluginDir)).map(v => join(pluginDir, v));
+        if (scriptPaths.length === 0) {
+            return;
+        }
+        Console.may.info(`Theme provides ${scriptPaths.length} external scripts.`);
         for (let scriptPath of scriptPaths) {
-            if (await ExtendedFS.isDir(scriptPath)) {
-                continue;
-            }
-            let script = (await import('file://'+scriptPath)).default; // gs this file:// is really important I spend 2 hours to find out why it doesn't work
-            if (typeof script === 'function') {
-                script(ctx);
-                Console.may.log(`Loaded theme script:`, scriptPath);
+            try {
+                if (await ExtendedFS.isDir(scriptPath)) {
+                    continue;
+                }
+                Console.may.log(`Try to import external script from theme: ${scriptPath}`);
+                let script = (await import('file://' + scriptPath)).default;
+                if (typeof script === 'function') {
+                    script(ctx);
+                    Console.may.log(`Loaded theme script:`, scriptPath);
+                } else {
+                    Console.may.log(`Theme script ${scriptPath} does not export a default function. Ignoring.`);
+                }
+            } catch (error) {
+                Console.error(`Unexpected error while loading theme script!`);
+                console.error(error);
+                process.exit(EXIT_CODES.THEME_SCRIPT_ERROR);
             }
         }
         return;
