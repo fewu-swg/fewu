@@ -1,5 +1,5 @@
 import Source from "./mod/source.mjs";
-import Theme from "./mod/theme.mjs";
+import Theme from "./theme.mjs";
 
 export {
     Source,
