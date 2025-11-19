@@ -6,6 +6,8 @@
 
 * Theme resolver will now try to catch errors while loading external script.
 
+* Add experimental `UPath` API for `Page`.
+
 ### REL3.7.2 - 2025-11-18
 
 * Bugfix
