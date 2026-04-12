@@ -1,4 +1,4 @@
-import { BasicContext as Context } from '@fewu-swg/abstract-types';
+import { BasicContext, BasicContext as Context } from '@fewu-swg/abstract-types';
 import { watch, readFile, writeFile, stat } from 'node:fs/promises';
 import { join, normalize } from 'node:path';
 import { Console } from '@fewu-swg/fewu-utils';
@@ -54,14 +54,14 @@ async function hasFrontMatter(filePath: string): Promise<boolean> {
     }
 }
 
-async function addFrontMatterToFile(filePath: string, localManager: LocalManager): Promise<void> {
+async function addFrontMatterToFile(ctx: BasicContext,filePath: string, localManager: LocalManager): Promise<void> {
     try {
         if (await hasFrontMatter(filePath)) {
             Console.log(`File ${filePath} already has FrontMatter, skipping.`);
             return;
         }
 
-        const randomString = localManager.generateUniqueRandomString(16, filePath + Date.now());
+        const randomString = localManager.generateUniqueRandomString(Number(ctx.config?.['live-server']?.['permalink-length']) || 16, filePath + Date.now());
         const permalink = `/article/${randomString}/`;
 
         const now = new Date();
@@ -301,7 +301,7 @@ export default class LocalManager {
             const ext = filePath.split('.').pop()?.toLowerCase();
             if (['md', 'markdown', 'txt'].includes(ext || '')) {
                 Console.log(`New file detected: ${filePath}`);
-                await addFrontMatterToFile(filePath, this);
+                await addFrontMatterToFile(this.ctx, filePath, this);
             }
         } catch (error) {
             Console.error(`Error handling new file ${filePath}:`, error as Error);

@@ -4,6 +4,8 @@
 
 * Bugfix: A post without `<!--more-->` tag will get empty content.
 
+* Add configuration `live-server.permalink-length` to specify length for permalink created by builtin live-server.
+
 * Ported to `nodenext`.
 
 ## REL3.7.3 - 2025-11-19

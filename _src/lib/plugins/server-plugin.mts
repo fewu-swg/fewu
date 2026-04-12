@@ -51,11 +51,10 @@ export default class _ServerPlugin implements Plugin {
             if (Argv['-S'] || Argv['--server']) {
                 ctx.on('ready', async (_ctx) => {
                     server.create(_ctx).listen(parseInt(Argv['-S']?.[0] || Argv['--server']?.[0]) || 3000);
-                    
-                    // 启动本地文件管理器，监听post_dir目录
+
                     const localManager = new LocalManager(_ctx);
                     localManager.start();
-                    
+
                     try {
                         watch(ctx.SOURCE_DIRECTORY, { recursive: true, }, (event, filename) => {
                             if (!filename?.startsWith('git') && event === 'change') {
@@ -63,6 +62,12 @@ export default class _ServerPlugin implements Plugin {
                                 registerWatchTask(ctx, { includeSource: true });
                             }
                         });
+                    } catch (error) {
+                        console.error(error);
+                        Console.error(`Unexpected error while trying to watch source directory. Your current system might not support Node.js fs.watch (recursively) feature. Live-change will not work.`);
+                    }
+
+                    try {
                         watch(ctx.THEME_DIRECTORY, { recursive: true }, (event, filename) => {
                             if (!filename?.startsWith('git') && event === 'change') {
                                 Console.log(`Theme reload Triggered: ${filename}`);
@@ -71,7 +76,7 @@ export default class _ServerPlugin implements Plugin {
                         });
                     } catch (error) {
                         console.error(error);
-                        Console.error(`Unexpected error. Your current system might not support Node.js fs.watch (recursively) feature. Live-change will not work.`);
+                        Console.error(`Unexpected error while trying to watch source directory. Your current system might not support Node.js fs.watch (recursively) feature. Live-change will not work.`);
                     }
                 });
             }
