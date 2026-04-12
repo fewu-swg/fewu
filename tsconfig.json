@@ -1,9 +1,13 @@
 {
     "compilerOptions": {
         "target": "ES2022",
-        "module": "ESNext",
-        "moduleResolution": "node",
+        "module": "nodenext",
+        "moduleResolution": "nodenext",
+        "rootDir": "./_src",
         "outDir": "./_dist",
+        "types": [
+            "node"
+        ],
         "noEmit": false,
         "allowJs": true,
         "strict": true,
