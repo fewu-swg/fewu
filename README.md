@@ -1,6 +1,6 @@
 README.md：说明文件。  
 
-版权所有 (C) 2020-2024 0xarch(soloev) 
+版权所有 (C) 2020-2026 0xarch(soloev) 
 本程序为自由软件：你可以依据自由软件基金会所发布的第三版或更高版本的GNU通用公共许可证重新发布、修改本程序。
 
 虽然基于使用目的而发布本程序，但不负任何担保责任，亦不包含适销性或特定目标之适用性的暗示性担保。详见GNU通用公共许可证。
@@ -14,30 +14,31 @@ README.md：说明文件。
 ## 使用 Fewu
 
 ### 依赖
-* node.js >= 16
-* npm
+* node.js >= 16 (如果你需要文章热重载，那么需要node.js >= 20)
+* pnpm
+> `pnpm` is offically supported, every feature related to local pacakges will be only tested on pnpm.
 
 ### 部署
 
 1. 下载 fewu-cli
 ```sh
-npm install -g fewu-cli
+pnpm install fewu-cli
 ```
 
 2. 自动生成需要的目录和文件。
 ```sh
-fewu --init
+pnpm fewu init
 ```
 > 通常这个命令只需要运行一次。你也可以重复运行。是否会破坏数据取决于 Node.js 的内部实现。在 Arch Linux 上的测试结果表明多次运行此命令并无明显影响。
 
 3. [可选] 写一篇博客
 ```sh
-fewu --new
+pnpm fewu new
 ```
 
 4. 生成发布版网站
 ```sh
-fewu
+pnpm fewu
 ```
 > Fewu 在写入网页的时候会首先将已有的网页文件内容与生成的内容比对。如果内容相同，则不会继续写入文件。
 
@@ -57,5 +58,5 @@ fewu
 
 ## 作出贡献
 
-你可以发起 Issue ，或提交 Pull Request 来为 Fewu 作出贡献。我们非常重视你的意见。
+你可以发起 Issue ，或提交 Pull Request.
 > 耐心。

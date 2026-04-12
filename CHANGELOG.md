@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## DEV3.7.81 - 2026-04-12
+
+* Bugfix: A post without `<!--more-->` tag will get empty content.
+
+* Ported to `nodenext`.
+
 ## REL3.7.3 - 2025-11-19
 
 * Add exit codes for debugging.

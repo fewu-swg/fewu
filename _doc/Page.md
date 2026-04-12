@@ -130,3 +130,14 @@ Get the relative file path of the current page.
 ### `page.stat`
 
 Get the file statistics of the current page, if available. See documentation of Node's `fs.Stats`.
+
+## Experimental Features
+
+There are some unstable properties in `Page` that may change any time. Use at your own risk.
+
+* `build_relative_path: UPath`
+* `build_absolute_path: UPath`
+* `source_relative_path: UPath`
+* `source_absolute_path: UPath`
+* `web_relative_path: UPath`
+* `web_absolute_path: UPath`
