@@ -51,7 +51,7 @@ rm -r "$TEST_DIR"/*
 "$NPM" i "$PKG_DIR"
 "$NPM" i fewu-cli
 
-fewu --init
+pnpm fewu init
 
 if [ "$THEME_DIR" != "_NO_THEME" ];then
     "$NPM" i "$PKG_DIR/$THEME_DIR"
@@ -61,7 +61,7 @@ if [ "$THEME_DIR" != "_NO_THEME" ];then
 fi
 "$NPM" i
 
-fewu --server
+pnpm fewu --server
 
 xdg-open localhost:3000
 
