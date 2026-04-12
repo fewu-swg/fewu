@@ -20,7 +20,6 @@ export async function resolveContent(content: string) {
         ...postProp
     };
     let referencedImages = [];
-    // 检测文件的换行符
     const newline = detectNewlineGraceful(content) || '\n';
     const lines = content.split(newline);
 
@@ -34,7 +33,7 @@ export async function resolveContent(content: string) {
         }
     }
 
-    if (moreIndex === -1 || moreIndex == lines.length+1) {
+    if (moreIndex === -1 || moreIndex == lines.length-1) {
         /* No introduction provided */
         postContent = lines.slice(i).join(newline);
     } else {

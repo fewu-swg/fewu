@@ -1,5 +1,4 @@
-import { PageContainer } from "#lib/types";
-import { BasicContext as Context, Page } from "@fewu-swg/abstract-types";
+import type { BasicContext as Context, Page, PageContainer } from "@fewu-swg/abstract-types";
 import moment from "moment";
 import { EOL } from "os";
 import { join } from "path";
