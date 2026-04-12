@@ -1,5 +1,5 @@
 import { Pagable } from "#lib/types";
-import { __Deployer, BasicContext, FileBinding, Result, Page } from "@fewu-swg/abstract-types";
+import { Deployer as __Deployer, BasicContext, FileBinding, Result, Page } from "@fewu-swg/abstract-types";
 import { basename, extname, join, normalize, posix, relative, sep } from "node:path";
 import { readdir, readFile, stat, writeFile } from "node:fs/promises";
 import defaultPages from "./page/defaultPage.mjs";

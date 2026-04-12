@@ -1,10 +1,9 @@
 import { extname } from "path";
 import { Console, NewPromise } from "@fewu-swg/fewu-utils";
-import { __Renderer, BasicContext, FileBinding, Result } from '@fewu-swg/abstract-types';
-import { Renderer as RendererInterface } from "@fewu-swg/abstract-types";
+import { Renderer as __Renderer, RendererContext, BasicContext, FileBinding, Result } from '@fewu-swg/abstract-types';
 import AsyncEventEmitter from "#util/AsyncEmitter";
 
-export class Renderer extends AsyncEventEmitter implements RendererInterface {
+export class Renderer extends AsyncEventEmitter implements RendererContext {
     availables: __Renderer[] = [];
     #ctx: BasicContext;
     #initialized: Promise<void>;

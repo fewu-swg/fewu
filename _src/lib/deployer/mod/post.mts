@@ -1,4 +1,4 @@
-import { BasicContext, Result, __Deployer, Page, FileBinding, TargetFile } from "@fewu-swg/abstract-types";
+import { BasicContext, Result, Deployer as __Deployer, Page, FileBinding, TargetFile } from "@fewu-swg/abstract-types";
 import { join, relative } from "node:path";
 import { readdir, readFile, writeFile } from "node:fs/promises";
 import { getHelpers } from "#lib/interface/helper";

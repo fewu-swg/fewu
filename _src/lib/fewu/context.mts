@@ -1,4 +1,4 @@
-import { BasicContext, Config, Plugin, I18nProfiles, Deployer as DeployerInterface, Renderer as RendererInterface } from "@fewu-swg/abstract-types";
+import type { BasicContext, Config, Plugin, I18nProfiles, DeployerContext, RendererContext } from "@fewu-swg/abstract-types";
 import { version } from "./fewu.mjs";
 import defaultConfig, { mixConfig, readConfig } from "./config.mjs";
 import { PluginResolver } from "./plugind.mjs";
@@ -34,8 +34,8 @@ class Context extends AsyncEventEmitter implements BasicContext {
     public readonly THEME_DIRECTORY: string;
     public readonly CONFIG_PATH: string;
 
-    public Deployer: DeployerInterface;
-    public Renderer: RendererInterface;
+    public Deployer: DeployerContext;
+    public Renderer: RendererContext;
 
     public initialized: Promise<unknown>;
 

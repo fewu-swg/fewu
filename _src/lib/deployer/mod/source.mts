@@ -1,4 +1,4 @@
-import { BasicContext, Result, __Deployer, FileBinding } from "@fewu-swg/abstract-types";
+import { BasicContext, Result, Deployer as __Deployer, FileBinding } from "@fewu-swg/abstract-types";
 import { cp } from "node:fs/promises";
 import ExtendedFS from "#util/ExtendedFS";
 

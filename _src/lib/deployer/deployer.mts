@@ -1,5 +1,5 @@
 import { Console, NewPromise } from "@fewu-swg/fewu-utils";
-import { BasicContext, Result, Deployer as DeployerInterface, __Deployer, FileBinding } from "@fewu-swg/abstract-types";
+import { BasicContext, Result, DeployerContext, Deployer as __Deployer, FileBinding } from "@fewu-swg/abstract-types";
 import { readdir } from "node:fs/promises";
 import { join } from "node:path";
 import AsyncEventEmitter from "#util/AsyncEmitter";
@@ -8,8 +8,7 @@ import PostDeployer from "./mod/post.mjs";
 import CommonSourceDeployer from "./mod/source.mjs";
 import { statSync } from "node:fs";
 
-
-export class Deployer extends AsyncEventEmitter implements DeployerInterface {
+export class Deployer extends AsyncEventEmitter implements DeployerContext {
     availables: __Deployer[] = [];
     fallback: __Deployer;
     #builtins: __Deployer[] = [];
@@ -63,7 +62,7 @@ export class Deployer extends AsyncEventEmitter implements DeployerInterface {
         return result;
     }
 
-    async deployAll(ctx: BasicContext) {
+    async deployAll(ctx: BasicContext): Promise<Result> {
         Console.log(`Delivering deploy tasks...`);
         let source_dir = join(ctx.THEME_DIRECTORY, `source`)
         let source_files = (await readdir(source_dir, {recursive: true})).filter(v => !(statSync(join(source_dir,v)).isDirectory()));
@@ -98,6 +97,7 @@ export class Deployer extends AsyncEventEmitter implements DeployerInterface {
                 return result;
             })())
         ]);
+        let err_content: string = '';
         taskStatus.forEach(v => {
             if (v.status === "rejected") {
                 Console.warn(`Received rejected promise while deploying.`, v.reason);
@@ -105,9 +105,13 @@ export class Deployer extends AsyncEventEmitter implements DeployerInterface {
             }
             if (v.value.status === 'Err') {
                 Console.log(`Received error while deploying.`, v.value.value.toString());
-                throw new Error(`Error! ${v.value.value.toString()}`);
+                err_content = v.value.value.toString();
             }
         })
         Console.log(`All deploy tasks are completed.`);
+        return {
+            status: err_content ? 'Err' : 'Ok',
+            value: err_content
+        }
     }
 }
