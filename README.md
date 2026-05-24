@@ -21,6 +21,10 @@ You should have received a copy of the GNU General Public License along with thi
 
 `Fewu` is automatic static blog site generator. It's designed as fixed, time-saving, randomless, which means the same configuration should have to same result everywhere.
 
+> Note: GitHub Releases is no longer used after REL3.2.2 (Jan 6, 2025). You should download from npm if you want tarballs.
+
+> Note: package `fewu` (without scoping) has not received updates for about 1 year. It is confirmed deprecated on May 24, 2026 with last dev update 3.7.81. The last stable update it received is 3.3.4. You should switch to `@fewu-swg/fewu` (it's automatically done if you are using `fewu-cli`, just update this package).
+
 ## Using
 
 ### Dependencies
