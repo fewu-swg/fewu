@@ -95,6 +95,8 @@ class Context extends AsyncEventEmitter implements BasicContext {
             this.THEME_DIRECTORY = join(baseDirectory, "node_modules", CONFIG.theme);
         }
 
+        Console.log(`Detected theme: ${this.THEME_DIRECTORY}`);
+
         async_tasks.push((async _ => {
             await pluginResolver.resolveAll();
             Console.log(`External Plugins: ${this.plugins.map(v => v.__fewu_plugin_name)}`);

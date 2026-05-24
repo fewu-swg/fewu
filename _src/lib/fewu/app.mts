@@ -5,6 +5,8 @@ async function App() {
 
     const ctx = new Context();
 
+    await ctx.emit('startup', ctx);
+
     await ctx.initialized;
 
     await ctx.emit('afterStartup', ctx);
