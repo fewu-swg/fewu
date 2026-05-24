@@ -56,6 +56,7 @@ class Server {
             effect: 'BOLD',
             color: 'LIGHTGREY'
         }, 'to stop.');
+        Console.log(`↓ The "Exiting" means the main function has exited. You can ignore this. ↓`);
         this.serverInstance.listen(port);
         return this;
     }
