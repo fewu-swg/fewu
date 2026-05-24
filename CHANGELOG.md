@@ -1,8 +1,12 @@
 # CHANGELOG
 
+## DEV3.7.82 - 2026-05-24
+
+* Use `UPath` in all core programs.
+
 ## DEV3.7.81 - 2026-04-12
 
-* Bugfix: A post without `<!--more-->` tag will get empty content.
+* Bug fix: A post without `<!--more-->` tag will get empty content.
 
 * Add configuration `live-server.permalink-length` to specify length for permalink created by builtin live-server.
 
@@ -16,9 +20,9 @@
 
 * Add experimental `UPath` API for `Page`.
 
-### REL3.7.2 - 2025-11-18
+## REL3.7.2 - 2025-11-18
 
-* Bugfix
+* Bug fix
 
 ## REL3.7.1 - 2025-11-18
 
@@ -37,13 +41,13 @@
 
 ## REL3.6.0 - 2025-06-24
 
-### IMPORTANTS
+### IMPORTANT THINGS
 
 * `Sass` deployer is separated to `@fewu-swg/fewu-deployer-sass`.
 
 * Rewrite `Deployer` and `Renderer`.
 
-* (Partial) Remove compat for old style plugins.
+* (Partial) Remove compatibility for old style plugins.
 
 * Plugins should export a `deployers: __Deployer[]`.
 
@@ -53,7 +57,7 @@
 
 * Remove monitor for deployer.
 
-### UTIL CHANGE
+### UTILITIES CHANGE
 
 * Add more types to `abstract-types`.
 
@@ -75,7 +79,7 @@
 
 ## REL3.5.0 - 2025-06-17
 
-### IMPORTANTS
+### IMPORTANT THINGS
 
 * `Context` now extends `AsyncEventEmitter` that supports async events.
 
@@ -89,26 +93,25 @@
 
 * `Context.Deployer` is moved to `Context.extend.Deployer`.
 
-### UTIL CHANGES
+### UTILITIES CHANGES
 
 * Unused Function Removal: `#util/I18n` `#util/StandaloneApp` (Deprecated).
 
 * Unused Function Removal: `#util/Console` `#util/Text` `#util/Argv` `#util/dynamicImport` `#util/NewPromise` `#util/NodeModules` (Replaced by `@fewu-swg/fewu-utils`).
 
-* New Util: `AsyncEventEmitter` at `#util/AsyncEmitter`.
+* New Utility: `AsyncEventEmitter` at `#util/AsyncEmitter`.
 
-### MISCS
+### MISC
 
 * Experimental Dev Feature: Use `typescript/native-preview`(`tsgo`) to compile code.
 
-* Fix typo in default config.
+* Fix typo in default configuration.
 
 * Move types to `@fewu-swg/abstract-types`.
 
-* Bugfix: Version detector causes error in Node.js < 20.11.0
+* Bug fix: Version detector causes error in Node.js < 20.11.0
 
 * Feature: Automatically disable live change in server mode when `fs.watch` with `recursively` is not supported in current platform.
-
 
 ## REL3.4.18 - 2025-05-20
 
