@@ -4,6 +4,12 @@
 
 * Use `UPath` in all core programs.
 
+* Ignore files that ends with `.swp` or `~` in live server.
+
+* Try to catch errors if local manager get errors.
+
+* Rename `frontMatter.mts` to `front-matter.mts`.
+
 ## DEV3.7.81 - 2026-04-12
 
 * Bug fix: A post without `<!--more-->` tag will get empty content.
