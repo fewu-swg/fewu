@@ -1,5 +1,5 @@
 import { detectNewlineGraceful } from 'detect-newline';
-import { resolve } from "./frontMatter.mjs";
+import { resolve } from "./front-matter.mjs";
 
 let regExps = {
     MATCH_H1: /\n# /,
