@@ -1,6 +1,10 @@
 # CHANGELOG
 
-## DEV3.7.82 - 2026-05-24
+## DEV3.7.83 - 2026-05-26
+
+* Get rid of npm's default license type (proprietary) which conflicts with GPLv3
+
+## DEV3.7.82 - 2026-05-26
 
 * Use `UPath` in all core programs.
 
@@ -9,6 +13,8 @@
 * Try to catch errors if local manager get errors.
 
 * Rename `frontMatter.mts` to `front-matter.mts`.
+
+* Port README to English.
 
 ## DEV3.7.81 - 2026-04-12
 
