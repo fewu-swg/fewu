@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## DEV3.7.84 - 2026-06-07
+
+* Remove hardcoded default license.
+
 ## DEV3.7.83 - 2026-05-26
 
 * Get rid of npm's default license type (proprietary) which conflicts with GPLv3

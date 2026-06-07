@@ -16,7 +16,6 @@ export async function resolveContent(content: string) {
         date: '1970-1-1',
         category: " ",
         tags: " ",
-        license: 'CC BY-NC-SA 4.0',
         ...postProp
     };
     let referencedImages = [];
